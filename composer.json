@@ -1,0 +1,12 @@
+{
+    "require": {
+        "monolog/monolog": "^1.24",
+        "twig/twig": "^2.6",
+        "twig/extensions": "^1.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Barbershop\\":"src"
+        }
+    }
+}

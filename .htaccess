@@ -1,0 +1,4 @@
+AddHandler application/x-httpd-php72 .php
+Options +FollowSymLinks
+RewriteEngine on
+RewriteRule ^([a-zA-Z]*)/?([a-zA-Z]*)?/?([a-zA-Z0-9]*)?/?$ index.php [QSA,L]

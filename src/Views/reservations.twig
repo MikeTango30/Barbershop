@@ -1,0 +1,31 @@
+{% extends 'layout.twig' %}
+
+{% block title %}
+Books
+{% endblock %}
+{% block content %}
+<table>
+    <thead>
+        <th>Customer</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th></th>
+    </thead>
+{% for reservation in reservations %}
+    <tr>
+        <td>{{ reservation.customer }}</td>
+        <td>{{ reservation.resDate }}</td>
+        <td>{{ reservation.arrTime }}</td>
+        <td><a href="barber/reservation/{{ reservation.id }}">View</a></td>
+    </tr>
+{% endfor %}
+</table>
+{% if currentPage != 1 %}
+    <a href="barber/reservations/{{ currentPage - 1 }}">Previous</a>
+{% endif %}
+{% if not lastPage %}
+    <a href="barber/reservations/{{ currentPage + 1 }}">Next</a>
+{% endif %}
+{% endblock %}
+
+

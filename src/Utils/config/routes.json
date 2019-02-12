@@ -1,0 +1,22 @@
+{
+    "client": {
+        "controller": "Client",
+        "method": "getAllByWeek",
+        "params": {
+            "page": "number"
+        }
+    },
+    "barber": {
+        "controller":"Reservation",
+        "method": "getAll"
+    },
+    "barber/search": {
+        "controller": "Barber",
+        "method": "search"
+    },
+    "my-books": {
+        "controller": "Book",
+        "method": "getByUser",
+        "login": true
+    }
+}
