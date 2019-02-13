@@ -17,8 +17,6 @@ class ReservationController extends AbstractController
             'currentPage' => $page,
             'lastPage' => count($reservations) < self::PAGE_LENGTH
         ];
-        
-        var_dump($page);
         return $this->render('reservations.twig', $properties);
     }
 

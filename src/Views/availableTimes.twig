@@ -1,0 +1,23 @@
+{% extends 'layout.twig' %}
+
+{% block title %}
+Times
+{% endblock %}
+{% block content %}
+<table>
+    <thead>
+        <th></th>
+        <th>Time</th>
+        <th>Availability</th>
+        <th></th>
+    </thead>
+{% for reservation in reservations %}
+    <tr>
+        <td>{{ reservation.customer }}</td>
+        <td>{{ reservation.resDate }}</td>
+        <td>{{ reservation.arrTime }}</td>
+        <td><a href="barber/reservation/{{ reservation.id }}">View</a></td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}

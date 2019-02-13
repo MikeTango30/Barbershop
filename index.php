@@ -6,6 +6,8 @@ use Barbershop\Core\Config;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Barbershop\Utils\DependencyInjector;
+use Barbershop\Reservations\AvailableTimes;
+use Barbershop\Models\ReservationModel;
 
 require_once __DIR__ . '/vendor/autoload.php';
 
@@ -39,44 +41,16 @@ echo $response;
 
 
 
+//TEST
 
+$times = new AvailableTimes;
+$reservationModel = new ReservationModel($db);
+$times = $times->getTimes(14);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//FORCED one book
-// $bookModel = new BookModel(Db::getInstance());
-// $book = $bookModel->get(22);
-// $params = ['book' => $book];
-// echo $twig->loadTemplate('book.twig')->render($params);
-
-//FORCED all books
-// $bookModel = new BookModel(Db::getInstance());
-// $books = $bookModel->getAll(1, 3);
-// $params = ['books' => $books, 'currentPage' => 2];
-// echo $twig->loadTemplate('books.twig')->render($params);
-
-
-//FORCED sales
-// $saleModel = new SaleModel(Db::getInstance());
-// $sales = $saleModel->getByUser(1);
-// $params = ['sales' => $sales];
-// echo $twig->loadTemplate('sales.twig')->render($params);
-
-//FORCED specific sale
-// $saleModel = new SaleModel(Db::getInstance());
-// $sale = $saleModel->get(1);
-// $params = ['sale' => $sale];
-// echo $twig->loadTemplate('sale.twig')->render($params);
+foreach($times as $day) {
+    foreach($day as $dt) {
+        echo $dt->format('Y-m-d -- H:i'), "</br>";
+        var_dump($reservationModel->checkAvailability($dt->format('Y-m-d'), $dt->format('H:i')));
+        
+    }
+}

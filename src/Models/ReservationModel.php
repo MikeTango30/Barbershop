@@ -12,10 +12,10 @@ class ReservationModel extends AbstractModel
 {
     const CLASSNAME = 'Barbershop\Domain\Reservation';
     
-    public function getByDate(int $resDate) {
-        $query = 'SELECT * FROM reservation WHERE resDate = :resDate';
+    public function getByDate(int $reservationDate) {
+        $query = 'SELECT * FROM reservation WHERE ReservationDate = :ReservationDate';
         $sth = $this->db->prepare($query);
-        $sth->execute(['resDate'=>$resDate]);
+        $sth->execute(['ReservationDate'=>$reservationDate]);
         
         $reservations = $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
         
@@ -37,6 +37,21 @@ class ReservationModel extends AbstractModel
     
         return $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
     }
+    
+    public function checkAvailability($reservationDate, $arrivalTime) {
+        $query = 'SELECT * FROM reservation WHERE ReservationDate = :ReservationDate AND ArrivalTime = :ArrivalTime';
+        $sth = $this->db->prepare($query);
+        $sth->execute(['ReservationDate'=>$reservationDate, 'ArrivalTime'=>$arrivalTime]);
+        
+        $reservations = $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
+        
+        if (empty($reservations)) {
+            return TRUE;
+        }
+        else {
+            return FALSE;
+        }
+    }    
     
     public function getByName($firstname) {
         //TODO

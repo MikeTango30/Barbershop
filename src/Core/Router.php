@@ -83,12 +83,10 @@ class Router
             $customerId = $request->getCookies()->get('user');
             $controller->setCustomerId($customerId);
         } else {
-            setcookie($_COOKIE['user'], "11111");
+            setcookie('user', "11111");
         }
 
         $params = $this->extractParams($route, $path);
-        return call_user_func_array(
-            [$controller, $info['method']], $params
-        );
+        return call_user_func_array([$controller, $info['method']], $params);
     }
 }    
