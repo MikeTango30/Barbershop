@@ -12,10 +12,11 @@ class ReservationModel extends AbstractModel
 {
     const CLASSNAME = 'Barbershop\Domain\Reservation';
     
-    public function getByDate(int $reservationDate) {
-        $query = 'SELECT * FROM reservation WHERE ReservationDate = :ReservationDate';
+    public function getByDate($reservationDate) {
+        $query = 'SELECT * FROM reservation WHERE reservationDate = :reservationDate';
         $sth = $this->db->prepare($query);
-        $sth->execute(['ReservationDate'=>$reservationDate]);
+        $sth->bindParam('reservationDate', $reservationDate, PDO::PARAM_STR);
+        $sth->execute();
         
         $reservations = $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
         
@@ -38,19 +39,14 @@ class ReservationModel extends AbstractModel
         return $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
     }
     
-    public function checkAvailability($reservationDate, $arrivalTime) {
-        $query = 'SELECT * FROM reservation WHERE ReservationDate = :ReservationDate AND ArrivalTime = :ArrivalTime';
+    //
+    public function loadReservations() {
+        $query = 'SELECT * FROM reservation';
         $sth = $this->db->prepare($query);
-        $sth->execute(['ReservationDate'=>$reservationDate, 'ArrivalTime'=>$arrivalTime]);
+        $sth->execute();
         
-        $reservations = $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
-        
-        if (empty($reservations)) {
-            return TRUE;
-        }
-        else {
-            return FALSE;
-        }
+        return $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
+
     }    
     
     public function getByName($firstname) {
@@ -61,8 +57,13 @@ class ReservationModel extends AbstractModel
         //TODO
     }
     
-    public function makeReservation(): Reservation {
-        //TODO
+    public function makeReservation(Reservation $reservation) {
+        $query = 'INSERT INTO reservation (customer_id, reservationDate, arrivalTime) VALUES(:customer_id, :reservationDate, :arrivalTime)';
+        $sth = $this->db->prepare($query);
+        $sth->bindParam('customer_id', $this->customer_id, PDO::PARAM_STR);
+        $sth->bindParam('reservationDate', $this->reservationDate, PDO::PARAM_STR);
+        $sth->bindParam('arrivalTime', $this->arrivalTime, PDO::PARAM_STR);
+        $sth->execute();
     }
     
     public function cancelReservation() {

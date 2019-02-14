@@ -3,6 +3,7 @@
 namespace Barbershop\Controllers;
 
 use Barbershop\Models\ReservationModel;
+use Barbershop\Reservations\AvailableTimes;
 
 class ReservationController extends AbstractController 
 {
@@ -46,5 +47,13 @@ class ReservationController extends AbstractController
             'lastPage' => true
         ];
         return $this->render('reservations.twig', $properties);
+    }
+    
+    //
+    public function availableTimes() {
+        $times = new AvailableTimes($this->db);
+        $availableTimes = $times->getAvailableTimes();
+        
+        return $this->render('customer.twig', ["params"=>$availableTimes]);
     }
 }

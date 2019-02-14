@@ -6,32 +6,33 @@ use Babershop\Core\Customer;
 
 class Reservation
 {
-    private $bookTime;
-    private $bookDate;
-    private $customer;
+    private $arrivalTime;
+    private $reservationDate;
+    private $customer_id;
+   
     
     
-    public function getTime() {
-        return $this->bookTime;
+    public function getArrivalTime() {
+        return $this->arrivalTime;
     }
     
-    public function getDate() {
-        return $this->bookDate;
+    public function getReservationDate() {
+        return $this->reservationDate;
     }
     
-    public function getCustomer() {
-        return $this->customer;
+    public function getCustomer_id() {
+        return $this->customer_id;
     }
     
-    public function setTime($bookTime) {
-        $this->bookTime = $bookTime;
+    public function setArrivalTime($arrivalTime) {
+        $this->arrivalTime = $arrivalTime;
     }
     
-    public function setDate($bookDate) {
-        $this->bookDate = $bookDate;
+    public function setReservationDate($reservationDate) {
+        $this->reservationDate = $reservationDate;
     }
     
-    public function setCustomer($customer) {
-        $this->customer = $customer;
+    public function setCustomerId($customer_id) {
+        $this->customer_id = $customer_id;
     }
 }

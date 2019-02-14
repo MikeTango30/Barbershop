@@ -1,10 +1,7 @@
 {
-    "client": {
-        "controller": "Client",
-        "method": "getAllByWeek",
-        "params": {
-            "page": "number"
-        }
+    "customer": {
+        "controller": "Reservation",
+        "method": "availableTimes"
     },
     "barber": {
         "controller":"Reservation",
