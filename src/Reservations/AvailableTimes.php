@@ -33,10 +33,6 @@ class AvailableTimes
             );
     }
     
-    public function getTodayTimes() {
-        return $this->period;
-    }
-    
     public function getTimes($days) {
         for ($i = 0; $i < $days; $i++){
             
@@ -55,6 +51,7 @@ class AvailableTimes
         
         $reservationModel = new ReservationModel($this->db);
         $reservations = $reservationModel->loadReservations();
+        
         foreach($reservations as $reservation) {
             $reservationsStr[
                 $reservation->getReservationDate()." ".
@@ -62,9 +59,7 @@ class AvailableTimes
                 ] =
                     $reservation->getReservationDate()." ".
                     $reservation->getArrivalTime();
-            
-            unset($times[$reservation->getReservationDate()." ".$reservation->getArrivalTime()]);
-            
+            //unset($times[$reservation->getReservationDate()." ".$reservation->getArrivalTime()]);
         }
         $availableTimes = array_diff($times, $reservationsStr);
         

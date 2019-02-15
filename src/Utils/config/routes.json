@@ -3,17 +3,33 @@
         "controller": "Reservation",
         "method": "availableTimes"
     },
+        "customer/reserve": {
+        "controller": "Reservation",
+        "method": "chooseTime",
+        "params": {
+            "reservationDate": "string"
+        }
+    },
+        "customer/reserved": {
+        "controller": "Reservation",
+        "method": "reserveTime",
+        "params": {
+            "reservationDate": "string",
+            "firstname": "string",
+            "surname": "string",
+            "phone": "string"
+        }
+    },
+        "customer/cancel": {
+        "controller": "Reservation",
+        "method": "cancelTime"
+    },
     "barber": {
         "controller":"Reservation",
-        "method": "getAll"
+        "method": "getReservedTimes"
     },
     "barber/search": {
         "controller": "Barber",
         "method": "search"
-    },
-    "my-books": {
-        "controller": "Book",
-        "method": "getByUser",
-        "login": true
     }
 }

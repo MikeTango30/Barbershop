@@ -7,13 +7,16 @@ class Customer {
     private $firstname;
     private $surname;
     private $phone;
+    //private $db;
     
     
     public function __construct(
+        //$db,
         string $firstname, 
         string $surname,
         string $phone
     ) {
+        //$this->db = $db;
         $this->firstname = $firstname;
         $this->surname = $surname;
         $this->phone = $phone;

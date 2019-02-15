@@ -8,9 +8,14 @@ class Reservation
 {
     private $arrivalTime;
     private $reservationDate;
-    private $customer_id;
+    private $customerId;
+    //private $db;
    
     
+    
+    // public function __construct($db) {
+    //     $this->db = $db;
+    // }
     
     public function getArrivalTime() {
         return $this->arrivalTime;
@@ -20,8 +25,8 @@ class Reservation
         return $this->reservationDate;
     }
     
-    public function getCustomer_id() {
-        return $this->customer_id;
+    public function getCustomerId() {
+        return $this->customerId;
     }
     
     public function setArrivalTime($arrivalTime) {
@@ -32,7 +37,7 @@ class Reservation
         $this->reservationDate = $reservationDate;
     }
     
-    public function setCustomerId($customer_id) {
-        $this->customer_id = $customer_id;
+    public function setCustomerId($customerId) {
+        $this->customerId = $customerId;
     }
 }

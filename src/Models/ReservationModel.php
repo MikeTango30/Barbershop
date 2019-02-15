@@ -27,6 +27,7 @@ class ReservationModel extends AbstractModel
         return $reservations;
     }
     
+    
     public function getAll(int $page, int $pageLength): array {
         $start = $pageLength * ($page - 1);
         
@@ -39,7 +40,7 @@ class ReservationModel extends AbstractModel
         return $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
     }
     
-    //
+    //load all reservations
     public function loadReservations() {
         $query = 'SELECT * FROM reservation';
         $sth = $this->db->prepare($query);
@@ -57,17 +58,29 @@ class ReservationModel extends AbstractModel
         //TODO
     }
     
-    public function makeReservation(Reservation $reservation) {
+    //insert reservation into Db
+    public function createReservation(Reservation $reservation) {
         $query = 'INSERT INTO reservation (customer_id, reservationDate, arrivalTime) VALUES(:customer_id, :reservationDate, :arrivalTime)';
+        $customerId = $reservation->getCustomerId();
+        $reservationDate = $reservation->getReservationDate();
+        $arrivalTime = $reservation->getArrivalTime();
+        
         $sth = $this->db->prepare($query);
-        $sth->bindParam('customer_id', $this->customer_id, PDO::PARAM_STR);
-        $sth->bindParam('reservationDate', $this->reservationDate, PDO::PARAM_STR);
-        $sth->bindParam('arrivalTime', $this->arrivalTime, PDO::PARAM_STR);
-        $sth->execute();
+        $sth->bindParam('customer_id', $customerId, PDO::PARAM_STR);
+        $sth->bindParam('reservationDate', $reservationDate, PDO::PARAM_STR);
+        $sth->bindParam('arrivalTime', $arrivalTime, PDO::PARAM_STR);
+        
+        if (!$sth->execute()) {
+            throw new DbException($sth->errorInfo()[2]);
+        }
     }
     
-    public function cancelReservation() {
-        //TODO
+    //delete reservation from Db
+    public function cancelReservation(Reservation $reservation) {
+        $query = 'DELETE FROM reservation WHERE (customer_id) VALUES(:customer_id)';
+        $sth = $this->db->prepare($query);
+        $sth->bindParam('customer_id', $this->customer_id, PDO::PARAM_STR);
+        $sth->execute();
     }
     
     public function isReserved(): bool {

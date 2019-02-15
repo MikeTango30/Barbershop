@@ -7,20 +7,17 @@ Times
 <table>
     <thead>
         <th>Available Time</th>
-        {#<th>Time</th>#}
         <th>Reserve</th>
         <th></th>
     </thead>
     {#{{ dump(params) }}#}
 {% for param in params %}
     <tr>
-        <td>{{ param}}</td>
+        <td>{{ param }}</td>
         <td>
-            <form action="/customer/reserve" method="get">
-            <input type="submit" value="Reserve Time">
+            <form action="/customer/reserve"  method="get">
+            <button type="submit" name="reservationDate" value="{{ param }}">Reserve Time</button> 
         </td>
-        {#<td>{{ param.availabilities }}</td>#}
-        {#<td><a href="barber/reservation/{{ reservation.id }}">View</a></td>#}
     </tr>
 {% endfor %}
 </table>

@@ -8,4 +8,9 @@ class ErrorController extends AbstractController
         $properties = ['errorMessage' => 'Page not found!'];
         return $this->render('error.twig', $properties);
     }
+    
+    public function requiredField(): string {
+        $properties = ['errorMessage' => "Please fill this form!"];
+        return $this->render('error.twig', $properties);
+    }
 }
