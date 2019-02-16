@@ -79,12 +79,12 @@ class Router
             . $info["controller"] . "Controller";
         $controller = new $controllerName($this->di, $request);
 
-        // if ($request->getCookies()->has("user")) {
-        //     $cookie = $request->getCookies()->get("user");
-        //     $controller->setCookie($cookie);
-        // } else {
-        //      setcookie("user");
-        // }
+        if ($request->getCookies()->has("user")) {
+             $cookie = $request->getCookies()->get("user");
+             $controller->setCookie($cookie);
+        } else {
+              setcookie("user");
+        }
 
         $params = $this->extractParams($route, $path);
         return call_user_func_array([$controller, $info["method"]], $params);

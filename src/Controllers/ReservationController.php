@@ -82,17 +82,15 @@ class ReservationController extends AbstractController
         $firstname = $this->request->getParams()->getString("firstname");
         $surname = $this->request->getParams()->getString("surname");
         $phone = $this->request->getParams()->getString("phone");
-        
+
         //check if form is filled
         $check = new ReservationValidator();
         $check->checkFieldsValidity($firstname, $surname, $phone);
         
         SessionManager::startSession();
-        $cookie = SessionManager::setSession("phone", $phone, $this->request);
-        $this->setCookie = $cookie;
-        var_dump($_COOKIE);
-
-        var_dump($cookie);
+        $cookie = SessionManager::setSession("phone", $phone, $arrival, $this->request);
+        $this->setCookie($cookie);
+        var_dump($this->cookie);
         
 
         $customerController = new CustomerController($this->di, $this->request);
@@ -103,6 +101,7 @@ class ReservationController extends AbstractController
         $reservation->setCustomerId($customerId);
         $reservation->setArrivalTime(date("H:i:s", strtotime($arrival)));
         $reservation->setReservationDate(date("Y-m-d", strtotime($arrival)));
+        
         $reservationModel = new ReservationModel($this->db);
         $reservationModel->createReservation($reservation);
         
@@ -116,6 +115,7 @@ class ReservationController extends AbstractController
         $reservationModel = new ReservationModel($this->db);
         $reservationModel->cancelReservation($reservationDate, $arrivalTime);
         
+        //maybe router->route()
         return $this->availableTimes();
     }
 }

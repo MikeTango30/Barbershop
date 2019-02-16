@@ -36,6 +36,10 @@ abstract class AbstractController
         $this->cookie = $cookie;
     }
     
+    public function getCookie() {
+        return $this->cookie;
+    }
+    
     protected function render(string $template, array $params): string {
         return $this->view->loadTemplate($template)->render($params);
     }

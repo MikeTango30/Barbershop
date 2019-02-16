@@ -8,7 +8,7 @@ use Barbershop\Reservations\SessionManager;
 
 class CustomerController extends AbstractController 
 {
-    
+    //insert and get id or id if already in db - needs to be seperated
     public function idCustomer($firstname, $surname, $phone) {
         $customer = new Customer();
         $customer->setFirstname($firstname);
@@ -24,15 +24,14 @@ class CustomerController extends AbstractController
             return $customerId = $this->db->lastInsertId();
         }
     }
-    
+    //should show customer reservation if any or available times
     public function getCustomerReservation() {
         SessionManager::startSession();
-        var_dump($_SESSION["phone"]);
         var_dump($_COOKIE);
         var_dump($this->cookie);
         
         
-        if (empty($_SESSION["phone"])) {
+        if (empty($_COOKIE["phone"])) {
             $reservationController = new ReservationController($this->di, $this->request);
             return $reservationController->availableTimes();
         }
