@@ -27,9 +27,6 @@ class CustomerController extends AbstractController
     //should show customer reservation if any or available times
     public function getCustomerReservation() {
         SessionManager::startSession();
-        var_dump($_COOKIE);
-        var_dump($this->cookie);
-        
         
         if (empty($_COOKIE["phone"])) {
             $reservationController = new ReservationController($this->di, $this->request);

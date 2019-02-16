@@ -19,7 +19,7 @@ abstract class AbstractController
     protected $view;
     protected $log;
     protected $di;
-    protected $cookie;
+    //protected $cookie;
     
     public function __construct(DependencyInjector $di, Request $request) {
         $this->request = $request;
@@ -32,13 +32,13 @@ abstract class AbstractController
     } 
 
     
-    public function setCookie($cookie) {
-        $this->cookie = $cookie;
-    }
+    // public function setCookie($cookie) {
+    //     $this->cookie = $cookie;
+    // }
     
-    public function getCookie() {
-        return $this->cookie;
-    }
+    // public function getCookie() {
+    //     return $this->cookie;
+    // }
     
     protected function render(string $template, array $params): string {
         return $this->view->loadTemplate($template)->render($params);

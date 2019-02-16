@@ -79,6 +79,7 @@ class Router
             . $info["controller"] . "Controller";
         $controller = new $controllerName($this->di, $request);
 
+        //not sure if needed
         if ($request->getCookies()->has("user")) {
              $cookie = $request->getCookies()->get("user");
              $controller->setCookie($cookie);

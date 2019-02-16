@@ -86,7 +86,6 @@ class ReservationModel extends AbstractModel
             throw new DbException($sth->errorInfo()[2]);
         }
         setcookie("phone", "", time()-3600);
-        var_dump($_COOKIE["phone"]);
         SessionManager::destroySession();
     }
     

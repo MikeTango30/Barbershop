@@ -88,9 +88,8 @@ class ReservationController extends AbstractController
         $check->checkFieldsValidity($firstname, $surname, $phone);
         
         SessionManager::startSession();
-        $cookie = SessionManager::setSession("phone", $phone, $arrival, $this->request);
-        $this->setCookie($cookie);
-        var_dump($this->cookie);
+        SessionManager::setSession("phone", $phone, $arrival, $this->request);
+      
         
 
         $customerController = new CustomerController($this->di, $this->request);
