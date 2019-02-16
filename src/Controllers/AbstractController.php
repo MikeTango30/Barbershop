@@ -19,7 +19,7 @@ abstract class AbstractController
     protected $view;
     protected $log;
     protected $di;
-    protected $customerId;
+    protected $cookie;
     
     public function __construct(DependencyInjector $di, Request $request) {
         $this->request = $request;
@@ -28,12 +28,12 @@ abstract class AbstractController
         $this->log = $di->get('Logger');
         $this->view = $di->get('Twig_Environment');
         $this->config = $di->get('Utils\Config');
-        $this->customerId = $_COOKIE['user'];
+        // $this->cookie = $_COOKIE['user'];
     } 
 
     
-    public function setCustomerId($customerId) {
-        $this->customerId = $customerId;
+    public function setCookie($cookie) {
+        $this->cookie = $cookie;
     }
     
     protected function render(string $template, array $params): string {

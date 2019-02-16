@@ -8,7 +8,7 @@ use Barbershop\Domain\Reservation;
 use Barbershop\Domain\Customer;
 use Barbershop\Models\CustomerModel;
 use Barbershop\Reservations\Validators\ReservationValidator;
-use Barbershop\Controllers\ErrorController;
+use Barbershop\Reservations\SessionManager;
 
 class ReservationController extends AbstractController 
 {
@@ -32,7 +32,7 @@ class ReservationController extends AbstractController
 
     public function getByDate(): string {
         $reservationModel = new ReservationModel($this->db);
-        $reservations = $reservationModel->getByDate($resDate);
+        $reservations = $reservationModel->getByDate($reservationDate);
         $properties = [
             "reservations" => $reservations,
             "currentPage" => 1,
@@ -57,6 +57,7 @@ class ReservationController extends AbstractController
     
     //gets all available times
     public function availableTimes() {
+        
         $times = new AvailableTimes($this->db);
         $availableTimes = $times->getAvailableTimes();
      
@@ -70,43 +71,51 @@ class ReservationController extends AbstractController
         return $this->render("customerReserveForm.twig", ["params"=>$arrivalTime]);
     }
     
-    //reserves time by inserting customer and reservations into Db, checks if form fields are filled
+    
+    /**
+    *reserves time by inserting customer and reservations into Db, checks if form fields are filled
+    *needs to be restructured
+    **/
     public function reserveTime() {
-        $arrivalTime    = $this->request->getParams()->getString("reservationDate");
-        $firstname      = $this->request->getParams()->getString("firstname");
-        $surname        = $this->request->getParams()->getString("surname");
-        $phone          = $this->request->getParams()->getString("phone");
+        //gets all needed params
+        $arrival = $this->request->getParams()->getString("reservationDate");
+        $firstname = $this->request->getParams()->getString("firstname");
+        $surname = $this->request->getParams()->getString("surname");
+        $phone = $this->request->getParams()->getString("phone");
         
+        //check if form is filled
         $check = new ReservationValidator();
-        if ($check->isValid($firstname == false)) {
-            $errorController = new ErrorController($this->di, $this->request);
+        $check->checkFieldsValidity($firstname, $surname, $phone);
         
-            return $errorController->requiredField();
-        }
-        elseif ($check->isValid($surname == false)) {
-            $errorController = new ErrorController($this->di, $this->request);
+        SessionManager::startSession();
+        $cookie = SessionManager::setSession("phone", $phone, $this->request);
+        $this->setCookie = $cookie;
+        var_dump($_COOKIE);
+
+        var_dump($cookie);
         
-            return $errorController->requiredField();
-        }
-        elseif ($check->isValid($phone == false)) {
-            $errorController = new ErrorController($this->di, $this->request);
+
+        $customerController = new CustomerController($this->di, $this->request);
+        $customerId = $customerController->idCustomer($firstname, $surname, $phone);
         
-            return $errorController->requiredField();
-        }
-       
-        $customer = new Customer($firstname, $surname, $phone);
-        $customerModel = new CustomerModel($this->db);
-        $customerModel->insertCustomer($customer);
-        $lastId = $this->db->lastInsertId();
-        
+         //insert reservation
         $reservation = new Reservation();
-        $reservation->setCustomerId($lastId);
-        $reservation->setArrivalTime(date("H:i:s", strtotime($arrivalTime)));
-        $reservation->setReservationDate(date("Y-m-d", strtotime($arrivalTime)));
-      
+        $reservation->setCustomerId($customerId);
+        $reservation->setArrivalTime(date("H:i:s", strtotime($arrival)));
+        $reservation->setReservationDate(date("Y-m-d", strtotime($arrival)));
         $reservationModel = new ReservationModel($this->db);
         $reservationModel->createReservation($reservation);
         
-        return $this->render("reserved.twig", ["params"=>$arrivalTime]);
+        return $this->render("reserved.twig", ["params"=>$arrival]);
+    }
+    
+    public function cancelTime() {
+        $reservationDate = $this->request->getParams()->getString("reservationDate");
+        $arrivalTime = $this->request->getParams()->getString("arrivalTime");
+
+        $reservationModel = new ReservationModel($this->db);
+        $reservationModel->cancelReservation($reservationDate, $arrivalTime);
+        
+        return $this->availableTimes();
     }
 }

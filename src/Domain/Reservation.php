@@ -8,7 +8,7 @@ class Reservation
 {
     private $arrivalTime;
     private $reservationDate;
-    private $customerId;
+    private $customer_id;
     //private $db;
    
     
@@ -26,7 +26,7 @@ class Reservation
     }
     
     public function getCustomerId() {
-        return $this->customerId;
+        return $this->customer_id;
     }
     
     public function setArrivalTime($arrivalTime) {
@@ -38,6 +38,6 @@ class Reservation
     }
     
     public function setCustomerId($customerId) {
-        $this->customerId = $customerId;
+        $this->customer_id = $customerId;
     }
 }

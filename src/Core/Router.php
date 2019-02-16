@@ -12,13 +12,13 @@ class Router
     protected $di;
     private $routeMap;
     private static $regexPatters = [
-        'number' => '\d+',
-        'string' => '\w'
+        "number" => "\d+",
+        "string" => "\w"
     ];
 
     public function __construct(DependencyInjector $di) {
         $this->di = $di;
-        $json = file_get_contents(__DIR__ . '/../Utils/config/routes.json');
+        $json = file_get_contents(__DIR__ . "/../Utils/config/routes.json");
         $this->routeMap = json_decode($json, true);
     }
 
@@ -40,10 +40,10 @@ class Router
         string $route,
         array $info
     ) : string {
-        if (isset($info['params'])) {
-             foreach ($info['params'] as $name=>$type) {
+        if (isset($info["params"])) {
+             foreach ($info["params"] as $name=>$type) {
                 $route = str_replace(
-                    ':' . $name, self::$regexPatters[$type], $route
+                    ":" . $name, self::$regexPatters[$type], $route
                 );    
             }
         }
@@ -57,11 +57,11 @@ class Router
     ): array {
         $params = [];
         
-        $pathParts = explode('/', $path);
-        $routerParts = explode('/', $route);
+        $pathParts = explode("/", $path);
+        $routerParts = explode("/", $route);
         
         foreach ($routerParts as $key=>$routePart) {
-            if (strpos($routePart, ':') === 0) {
+            if (strpos($routePart, ":") === 0) {
                 $name = substr($routePart, 1);
                 $params[$name] = $pathParts[$key+1];
             }
@@ -75,18 +75,18 @@ class Router
         array $info,
         Request $request
     ): string {
-        $controllerName = '\Barbershop\Controllers\\'
-            . $info['controller'] . 'Controller';
+        $controllerName = "\Barbershop\Controllers\\"
+            . $info["controller"] . "Controller";
         $controller = new $controllerName($this->di, $request);
 
-        if ($request->getCookies()->has('user')) {
-            $customerId = $request->getCookies()->get('user');
-            $controller->setCustomerId($customerId);
-        } else {
-            setcookie('user', "11111");
-        }
+        // if ($request->getCookies()->has("user")) {
+        //     $cookie = $request->getCookies()->get("user");
+        //     $controller->setCookie($cookie);
+        // } else {
+        //      setcookie("user");
+        // }
 
         $params = $this->extractParams($route, $path);
-        return call_user_func_array([$controller, $info['method']], $params);
+        return call_user_func_array([$controller, $info["method"]], $params);
     }
 }    

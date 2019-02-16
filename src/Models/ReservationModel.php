@@ -6,12 +6,15 @@ use Barbershop\Domain\Reservation;
 use Barbershop\Exceptions\DbException;
 use Barbershop\Exceptions\NotFoundException;
 use Barbershop\Models\AbstractModel;
+use Barbershop\Reservations\SessionManager;
+
 use PDO;
 
 class ReservationModel extends AbstractModel
 {
     const CLASSNAME = 'Barbershop\Domain\Reservation';
     
+    //todo
     public function getByDate($reservationDate) {
         $query = 'SELECT * FROM reservation WHERE reservationDate = :reservationDate';
         $sth = $this->db->prepare($query);
@@ -27,7 +30,7 @@ class ReservationModel extends AbstractModel
         return $reservations;
     }
     
-    
+    //todo
     public function getAll(int $page, int $pageLength): array {
         $start = $pageLength * ($page - 1);
         
@@ -50,12 +53,8 @@ class ReservationModel extends AbstractModel
 
     }    
     
-    public function getByName($firstname) {
-        //TODO
-    }
-    
     public function getByTimes($timesBeen) {
-        //TODO
+        //TODO  
     }
     
     //insert reservation into Db
@@ -76,15 +75,18 @@ class ReservationModel extends AbstractModel
     }
     
     //delete reservation from Db
-    public function cancelReservation(Reservation $reservation) {
-        $query = 'DELETE FROM reservation WHERE (customer_id) VALUES(:customer_id)';
+    public function cancelReservation($reservationDate, $arrivalTime) {
+        $query = 'DELETE FROM reservation WHERE reservationDate=:reservationDate AND arrivalTime=:arrivalTime';
         $sth = $this->db->prepare($query);
-        $sth->bindParam('customer_id', $this->customer_id, PDO::PARAM_STR);
+        $sth->bindParam('reservationDate', $reservationDate, PDO::PARAM_STR);
+        $sth->bindParam('arrivalTime', $arrivalTime, PDO::PARAM_STR);
         $sth->execute();
-    }
-    
-    public function isReserved(): bool {
-        //TODO
+        
+        if (!$sth->execute()) {
+            throw new DbException($sth->errorInfo()[2]);
+        }
+        unset($_COOKIE);
+        SessionManager::destroySession();
     }
     
     public function search() {

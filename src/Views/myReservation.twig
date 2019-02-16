@@ -1,0 +1,12 @@
+{% extends 'layout.twig' %}
+
+{% block title %}
+My Reservation
+{% endblock %}
+{% block content %}
+<h3>You reserved time on {{ params.reservationDate }} at {{ params.arrivalTime|number_format(2, ":") }}</h3>
+    <form action="/cancel"  method="get">
+        <input type="hidden" name="reservationDate" value="{{ params.reservationDate }}">
+        <input type="hidden" name="arrivalTime" value="{{ params.arrivalTime }}">
+        <button type="submit" name="Cancel Reservation">Cancel Reservation</button> 
+{% endblock %}

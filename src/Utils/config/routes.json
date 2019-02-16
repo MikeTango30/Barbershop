@@ -1,16 +1,20 @@
 {
+    "": {
+        "controller": "Customer",
+        "method":"getCustomerReservation"
+    },
     "customer": {
         "controller": "Reservation",
         "method": "availableTimes"
     },
-        "customer/reserve": {
+    "customer/reserve": {
         "controller": "Reservation",
         "method": "chooseTime",
         "params": {
             "reservationDate": "string"
         }
     },
-        "customer/reserved": {
+    "customer/reserved": {
         "controller": "Reservation",
         "method": "reserveTime",
         "params": {
@@ -20,9 +24,12 @@
             "phone": "string"
         }
     },
-        "customer/cancel": {
+    "cancel": {
         "controller": "Reservation",
-        "method": "cancelTime"
+        "method": "cancelTime",
+        "params": {
+            "customer_id": "string"
+        }
     },
     "barber": {
         "controller":"Reservation",
