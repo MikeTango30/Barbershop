@@ -2,9 +2,10 @@
 
 namespace Barbershop\Reservations\Validators;
 use Barbershop\Controllers\ErrorController;
+use Barbershop\Controllers\AbstractController;
 
 
-class ReservationValidator
+class ReservationValidator extends AbstractController
 {
     public function isValid($name): bool {
        return !empty($name) ? true : false;

@@ -59,12 +59,9 @@ class AvailableTimes
                 ] =
                     $reservation->getReservationDate()." ".
                     $reservation->getArrivalTime();
-            //unset($times[$reservation->getReservationDate()." ".$reservation->getArrivalTime()]);
         }
         $availableTimes = array_diff($times, $reservationsStr);
         
         return $availableTimes;
-        // var_dump($times);
-        // var_dump($reservationsStr);
     }
 }

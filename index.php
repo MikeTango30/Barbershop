@@ -22,7 +22,6 @@ $db = new PDO(
         );
 
 $loader = new Twig_Loader_Filesystem(__DIR__ . '/src/Views');
-
 $view = new Twig_Environment($loader, ['debug' => true]);
 $view->addExtension(new Twig_Extension_Debug());
 

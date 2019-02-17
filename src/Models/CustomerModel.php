@@ -63,12 +63,11 @@ class CustomerModel extends AbstractModel
     }
     
     //gets customer object from Db
-    public function getCustomer($sessionKey): Customer {
+    public function getCustomer(): Customer {
         $query = "SELECT * FROM customer WHERE phone=:phone";
-        $sessionValue = SessionManager::getSession($sessionKey);
         
         $sth = $this->db->prepare($query);
-        $sth->bindParam("phone", $sessionValue, PDO::PARAM_STR);
+        $sth->bindParam("phone", $_COOKIE["phone"], PDO::PARAM_STR);
         
         if (!$sth->execute()) {
             throw new DbException($sth->errorInfo()[2]);

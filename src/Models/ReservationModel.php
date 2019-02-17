@@ -7,6 +7,7 @@ use Barbershop\Exceptions\DbException;
 use Barbershop\Exceptions\NotFoundException;
 use Barbershop\Models\AbstractModel;
 use Barbershop\Reservations\SessionManager;
+use Barbershop\Controllers\ErrorController;
 
 use PDO;
 
@@ -59,19 +60,27 @@ class ReservationModel extends AbstractModel
     
     //insert reservation into Db
     public function createReservation(Reservation $reservation) {
-        $query = 'INSERT INTO reservation (customer_id, reservationDate, arrivalTime) VALUES(:customer_id, :reservationDate, :arrivalTime)';
-        $customerId = $reservation->getCustomerId();
-        $reservationDate = $reservation->getReservationDate();
-        $arrivalTime = $reservation->getArrivalTime();
+        if (isset($_COOKIE["phone"])) {
+            $errorController = new ErrorController();
         
-        $sth = $this->db->prepare($query);
-        $sth->bindParam('customer_id', $customerId, PDO::PARAM_STR);
-        $sth->bindParam('reservationDate', $reservationDate, PDO::PARAM_STR);
-        $sth->bindParam('arrivalTime', $arrivalTime, PDO::PARAM_STR);
-        
-        if (!$sth->execute()) {
-            throw new DbException($sth->errorInfo()[2]);
+            return $errorController->oneReservation();
         }
+        else {
+        
+            $query = 'INSERT INTO reservation (customer_id, reservationDate, arrivalTime) VALUES(:customer_id, :reservationDate, :arrivalTime)';
+            $customerId = $reservation->getCustomerId();
+            $reservationDate = $reservation->getReservationDate();
+            $arrivalTime = $reservation->getArrivalTime();
+            
+            $sth = $this->db->prepare($query);
+            $sth->bindParam('customer_id', $customerId, PDO::PARAM_STR);
+            $sth->bindParam('reservationDate', $reservationDate, PDO::PARAM_STR);
+            $sth->bindParam('arrivalTime', $arrivalTime, PDO::PARAM_STR);
+            
+            if (!$sth->execute()) {
+                throw new DbException($sth->errorInfo()[2]);
+            }
+        }    
     }
     
     //delete reservation from Db
