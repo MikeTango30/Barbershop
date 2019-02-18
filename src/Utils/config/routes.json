@@ -129,11 +129,11 @@
         "controller": "Reservation",
         "method": "reserveTime",
         "params": {
-            "barber": "string",
             "reservationDate": "string",
             "firstname": "string",
             "surname": "string",
-            "phone": "string"
+            "phone": "string",
+            "barber": "string"
         }
     }    
 }    

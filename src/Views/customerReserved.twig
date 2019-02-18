@@ -4,7 +4,7 @@
 Reserve Time
 {% endblock %}
 {% block content %}
-<h3>{{ params.firstname }}, thank you! See you on {{ params.arrival|date("Y-m-d") }} at {{ params.arrival|date("H:i") }}!</h3>
+<h3>{{ formParameters.firstname }}, thank you! See you on {{ formParameters.arrival|date("Y-m-d") }} at {{ formParameters.arrival|date("H:i") }}!</h3>
     <form action="/"  method="get">
     <button type="submit" value="checkReservation">Check Reservation</button> 
 {% endblock %}

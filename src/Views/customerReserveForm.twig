@@ -5,8 +5,10 @@ Reserve Time
 {% endblock %}
 {% block content %}
 
-<h2>You chose {{ params }}</h2>
+<h2>You chose arrival time on {{ params|date("Y-m-d") }} at {{ params|date("H:i")}}</h2>
 <h3>Please fill this form and press Reserve button</h3>
+
+{{dump(errors)}}
 
 <form action="/customer/reserved" method="POST">
             <label>Reservation Form</label>

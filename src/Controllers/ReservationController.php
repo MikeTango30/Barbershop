@@ -172,6 +172,10 @@ class ReservationController extends AbstractController
             "phone" => $this->request->getParams()->getString("phone")
         ];
         
+        $today = new DateTime;
+        $tomorrow = new DateTime;
+        $tomorrow->modify("+1 day");
+        
         $sessionManager = new SessionManager();
         $sessionManager->startSession();
         $sessionManager->setSession("phone", $formParameters["phone"], $formParameters["arrival"]);
@@ -182,23 +186,19 @@ class ReservationController extends AbstractController
         );
       
         $errors = $reservationManager->manageReservation($formParameters);
+        $properties = [
+            "today" => $today->format("Y-m-d"),
+            "tomorrow" => $tomorrow->format("Y-m-d"),
+            "formParameters" => $formParameters,
+            "errors"=> $errors
+        ];
       
-        
         if (isset($errors) ) {
-             return $this->render(
-                 $identity."ReserveForm.twig", 
-                 [
-                    "formErrors" => $errors,
-                    "params" => $formParameters
-                 ]
-            );
+             
+             return $this->render($identity."ReserveForm.twig", $properties);
         } else {
-            return $this->render(
-                $identity."Reserved.twig",
-                [
-                    "params"=>$formParameters
-                ]
-            ); 
+            
+            return $this->render($identity."Reserved.twig", $properties); 
         }
     }
     
