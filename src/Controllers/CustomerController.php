@@ -9,29 +9,6 @@ use Barbershop\Reservations\AvailableTimes;
 
 class CustomerController extends AbstractController 
 {
-    //insert and get id or id if already in db - needs to be seperated
-    //public function idCustomer($firstname, $surname, $phone) {
-        // čia reikia sukurti naują klasę, kurioje bus kuriamas Customer Objektas. TOje klasėje išsaugoti vartotoją. 
-        // Taip galėsi išsikviesti tą pačią klasę rezervacijose 
-        // new CustomerManager ir ta klasė turės metodą create customer.
-        // taip pat kaip su available times darėm
-        
-        
-        // $customer = new Customer();
-        // $customer->setFirstname($firstname);
-        // $customer->setSurname($surname);
-        // $customer->setPhone($phone);
-        
-        // $customerModel = new CustomerModel($this->db);
-        // if ($customerModel->isInserted($phone)) {
-        //     return $customerId = $customerModel->getId($phone);
-        // }
-        // else {
-        //     $customerModel->insertCustomer($customer);
-        //     return $customerId = $this->db->lastInsertId();
-        // }
-    //}
-    
     //show customer reservation if any or available times
     public function getCustomerReservation() {
         $sessionManager = new SessionManager();

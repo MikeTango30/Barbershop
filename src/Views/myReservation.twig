@@ -1,4 +1,4 @@
-{% extends 'layout.twig' %}
+{% extends 'customerLayout.twig' %}
 
 {% block title %}
 My Reservation
@@ -9,4 +9,5 @@ My Reservation
         <input type="hidden" name="reservationDate" value="{{ params.reservationDate }}">
         <input type="hidden" name="arrivalTime" value="{{ params.arrivalTime }}">
         <button type="submit" name="Cancel Reservation">Cancel Reservation</button> 
+    </form>    
 {% endblock %}

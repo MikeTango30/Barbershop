@@ -16,20 +16,36 @@ class ReservationManager
         $this->db = $db;
     }
     
-    public function manageReservation($firstname, $surname, $phone, $arrival) {
+    public function identifyUser($param) {
+        return (!empty($param["barber"])) ? "customer" : "barber";
+        
+    }
+    
+     public function manageReservation($formParameters) {
         $check = new ReservationValidator();
-        $check->checkFieldsValidity($firstname, $surname, $phone);
-        
-        $customerManager = new CustomerManager($this->db);
-        $customer = $customerManager->createCustomer($firstname, $surname, $phone);
-        
-         //insert reservation
-        $reservation = new Reservation();
-        $reservation->setCustomerId($customer);
-        $reservation->setArrivalTime(date("H:i:s", strtotime($arrival)));
-        $reservation->setReservationDate(date("Y-m-d", strtotime($arrival)));
-        
-        $reservationModel = new ReservationModel($this->db);
-        $reservationModel->createReservation($reservation);
-    }    
+         if ($check->isReservationValid($formParameters)) {
+             
+            // create customer 
+            $customerManager = new CustomerManager($this->db);
+            $customerId = $customerManager->createCustomer($formParameters);
+            
+            //insert reservation
+            $reservation = new Reservation();
+            $reservation->setCustomerId($customerId);
+            $reservation->setArrivalTime(date("H:i:s", strtotime($formParameters["arrival"])));
+            $reservation->setReservationDate(date("Y-m-d", strtotime($formParameters["arrival"])));
+            
+            // create reservation 
+            $reservationModel = new ReservationModel($this->db);
+            if(!isset($_COOKIE["phone"])) {
+                $reservationModel->createReservation($reservation);
+            } else {
+                $errors['reservationExist'] = "You cannot have more than one active reservation";
+            }
+         }
+         
+         $errors[] = $check->getErrors();    
+         return $errors;
+    } 
+    
 }

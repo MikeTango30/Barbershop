@@ -21,9 +21,9 @@ Times
 {% endfor %}
 </table>
 {% if currentPage != 1 %}
-    <a href="/customer/{{ currentPage - 1 }}">Previous</a>
+    <a href="/customer/reservationDate/{{ currentPage - 1 }}">Previous</a>
 {% endif %}
 {% if not lastPage %}
-    <a href="/customer/{{ currentPage + 1 }}">Next</a>
+    <a href="/customer/reservationDate/{{ currentPage + 1 }}">Next</a>
 {% endif %}
 {% endblock %}

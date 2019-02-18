@@ -1,11 +1,43 @@
 {
     "": {
         "controller": "Customer",
-        "method":"getCustomerReservation"
+        "method":"getMyReservation",
+        "params": {
+            "page": "number"
+        }    
+    },
+    "/:page": {
+        "controller": "Customer",
+        "method":"getMyReservation",
+        "params": {
+            "page": "number"
+        }    
     },
     "customer": {
         "controller": "Reservation",
-        "method": "availableTimes"
+        "method": "getAllAvailableTimes"
+    },
+    "customer/:page": {
+        "controller": "Reservation",
+        "method": "availableTimes",
+        "params": {
+            "page": "number"
+        }    
+    },
+    "customer/reservationDate": {
+        "controller": "Reservation",
+        "method": "getAllDayAvailableTimes",
+        "params": {
+            "reservationDate": "string"
+        }
+    },
+    "customer/reservationDate/:page": {
+        "controller": "Reservation",
+        "method": "dayAvailableTime",
+        "params": {
+            "reservationDate": "string",
+            "page": "number"
+        }
     },
     "customer/reserve": {
         "controller": "Reservation",
@@ -13,7 +45,7 @@
         "params": {
             "reservationDate": "string"
         }
-    },
+    },    
     "customer/reserved": {
         "controller": "Reservation",
         "method": "reserveTime",
@@ -33,10 +65,60 @@
     },
     "barber": {
         "controller":"Reservation",
-        "method": "getReservedTimes"
+        "method": "getAllReservedTimes"
+    },
+    "barber/:page": {
+        "controller": "Reservation",
+        "method": "getReservedTimes",
+        "params": {
+            "page": "number"
+        }
+    },
+     "barber/date": {
+        "controller": "Reservation",
+        "method": "getByDate",
+        "params": {
+            "reservationDate": "string"
+        }
     },
     "barber/search": {
-        "controller": "Barber",
-        "method": "search"
-    }
-}
+        "controller": "Reservation",
+        "method": "search",
+        "params": {
+            "firstname": "string"
+        }
+    },
+    "barber/newReservation": {
+        "controller": "Reservation",
+        "method": "getAllAvailableTimes",
+        "params": {
+            "barber": "string"
+        }
+    },
+    "barber/newReservation/:page": {
+        "controller": "Reservation",
+        "method": "getAllAvailableTimes",
+        "params": {
+            "barber": "string",
+            "page": "number"
+        }
+    },    
+    "barber/reserve": {
+        "controller": "Reservation",
+        "method": "chooseTime",
+        "params": {
+            "reservationDate": "string",
+            "barber": "string"
+        }
+    },
+    "barber/reserved": {
+        "controller": "Reservation",
+        "method": "reserveTime",
+        "params": {
+            "reservationDate": "string",
+            "firstname": "string",
+            "surname": "string",
+            "phone": "string"
+        }
+    }    
+}    

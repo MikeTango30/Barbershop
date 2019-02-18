@@ -1,0 +1,25 @@
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <div style="border: solid 1px">
+        <a href="/barber">Barber</a>
+        <a href="/customer">Customer</a>
+        <hr>
+        <form action="/barber/newReservation" method="get">
+            <button type="submit" name="barber" value="barber">Create New Reservation</button>
+        </form>
+        <form action="/barber/search" method="get">
+            <label>Name</label>
+            <input type="text" placeholder="Name or Surname..." name="firstname">
+            <input type="submit" value="Search">
+        </form>
+        <form action="/barber/date" method="GET">
+            <button type="submit" name="reservationDate" value="{{ today }}">Reservations Today</button> 
+            <button type="submit" name="reservationDate" value="{{ tomorrow }}">Reservations Tomorrow</button>
+        </form>
+    </div>
+    {% block content %}{% endblock %}
+</body>
+</html>

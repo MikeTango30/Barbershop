@@ -14,22 +14,22 @@ class CustomerManager
         $this->db = $db;
     }
     
-    public function createCustomer($firstname, $surname, $phone) {
+    public function createCustomer($formParameters) {
         $customer = new Customer();
-        $customer->setFirstname($firstname);
-        $customer->setSurname($surname);
-        $customer->setPhone($phone);
+        $customer->setFirstname($formParameters["firstname"]);
+        $customer->setSurname($formParameters["surname"]);
+        $customer->setPhone($formParameters["phone"]);
         
         $customerModel = new CustomerModel($this->db);
-            if ($customerModel->isInserted($phone)) {
-                
-                return $customerId = $customerModel->getId($phone);
-            }
-            else {
-                $customerModel->insertCustomer($customer);
-                
-                return $customerId = $this->db->lastInsertId();
-            }
+        if ($customerModel->isInserted($formParameters["phone"])) {
+            $customerId = $customerModel->getId($formParameters["phone"]);
+        } else {
+            $customerModel->insertCustomer($customer);
+            $customerId = $this->db->lastInsertId();
+        }
+        
+        //var_dump($customerId);
+        return $customerId;
     }
 }
 

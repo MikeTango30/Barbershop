@@ -4,21 +4,20 @@ namespace Barbershop\Reservations;
 
 class SessionManager
 {
-    private static $sessionStarted = false;
+    private $sessionStarted = false;
     
     //starts session if not started
     public function startSession() {
-        
-        if (self::$sessionStarted == false) {
+        if ($this->sessionStarted == false) {
             session_start();
-            self::$sessionStarted = true;
+            $this->sessionStarted = true;
         }
     }
     
     public function destroySession() {
-        if (self::$sessionStarted == true) {
+        if ($this->sessionStarted == true) {
             session_destroy();
-            self::$sessionStarted = false;
+            $this->sessionStarted = false;
         }
     }
     

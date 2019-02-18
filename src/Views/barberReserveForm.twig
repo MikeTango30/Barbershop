@@ -1,4 +1,4 @@
-{% extends 'customerLayout.twig' %}
+{% extends 'barberLayout.twig' %}
 
 {% block title %}
 Reserve Time
@@ -8,13 +8,13 @@ Reserve Time
 <h2>You chose {{ params }}</h2>
 <h3>Please fill this form and press Reserve button</h3>
 
- {#{{ dump(formErrors) }}#}
 
-<form action="/customer/reserved" method="POST">
+<form action="/barber/reserved" method="POST">
             <label>Reservation Form</label>
             <input type="text" placeholder="Name" name="firstname">
             <input type="text" placeholder="Surname" name="surname">
             <input type="text" placeholder="Phone Number" name="phone">
+            <input type="hidden" name="barber" value="barber">
             <input type="hidden" name="reservationDate" value="{{ params }}">
             <input type="submit" value="Reserve"> 
         </form>

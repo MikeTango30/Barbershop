@@ -1,3 +1,8 @@
 mysql -u b8bace8f37f43e -p9f8509b7 -h eu-cdbr-west-02.cleardb.net
 
 use heroku_4855659825122eb
+
+
+
+SELECT *, count(customer.id) FROM reservation 
+JOIN customer ON customer.id= reservation.customer_id Group By customer.id;

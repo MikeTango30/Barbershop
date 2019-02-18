@@ -1,0 +1,11 @@
+{% extends 'barberLayout.twig' %}
+
+{% block title %}
+Reserve Time
+{% endblock %}
+{% block content %}
+<h3>{{ params.firstname }} {{ params.surname }}is reserved on {{ params.arrival|date("Y-m-d") }} at {{ params.arrival|date("H:i") }}!</h3>
+<h4>Phone Number {{ params.phone }}</h4>
+    <form action="/barber"  method="get">
+    <button type="submit" value="checkReservation">Check Reservation</button> 
+{% endblock %}

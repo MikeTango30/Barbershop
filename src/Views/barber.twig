@@ -1,4 +1,4 @@
-{% extends 'customerLayout.twig' %}
+{% extends 'barberLayout.twig' %}
 
 {% block title %}
 Times
@@ -14,16 +14,17 @@ Times
     <tr>
         <td>{{ time }}</td>
         <td>
-            <form action="/customer/reserve"  method="get">
+            <form action="/barber/reserve" method="get">
+            <input type="hidden" name="barber" value="barber">    
             <button type="submit" name="reservationDate" value="{{ time }}">Reserve Time</button> 
         </td>
     </tr>
 {% endfor %}
 </table>
 {% if currentPage != 1 %}
-    <a href="/customer/{{ currentPage - 1 }}">Previous</a>
+    <a href="/barber/newReservation/{{ currentPage - 1 }}">Previous</a>
 {% endif %}
 {% if not lastPage %}
-    <a href="/customer/{{ currentPage + 1 }}">Next</a>
+    <a href="/barber/newReservation/{{ currentPage + 1 }}">Next</a>
 {% endif %}
 {% endblock %}

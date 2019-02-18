@@ -1,31 +1,30 @@
 <?php
 
 namespace Barbershop\Reservations\Validators;
+
 use Barbershop\Controllers\ErrorController;
-use Barbershop\Controllers\AbstractController;
 
-
-class ReservationValidator extends AbstractController
+class ReservationValidator
 {
-    public function isValid($name): bool {
-       return !empty($name) ? true : false;
+    private $errors;
+    
+    public function isReservationValid(array $parameters): bool {
+        
+        foreach ($parameters as $field => $value) {
+            if (!$this->isFieldNotEmpty($value)) {
+                $this->errors[$field] = "Field is empty";
+            }
+        }
+        
+        return true;
     }
     
-    public function checkFieldsValidity($firstname, $surname, $phone) {
-        if ($this->isValid($firstname == false)) {
-            $errorController = new ErrorController($this->di, $this->request);
-        
-            return $errorController->requiredField();
-        }
-        elseif ($this->isValid($surname == false)) {
-            $errorController = new ErrorController($this->di, $this->request);
-        
-            return $errorController->requiredField();
-        }
-        elseif ($this->isValid($phone == false)) {
-            $errorController = new ErrorController($this->di, $this->request);
-        
-            return $errorController->requiredField();
-        }        
+    public function getErrors() {
+        return $this->errors;
     }
+    
+    public function isFieldNotEmpty ($name): bool {
+        return !empty($name) ? true : false;
+    }
+    
 }

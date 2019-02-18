@@ -1,0 +1,56 @@
+{% extends 'barberLayout.twig' %}
+
+{% block title %}
+Reservations
+{% endblock %}
+{% block content %}
+<form action="/barber/date" method="GET" >
+    <input type="date" name="reservationDate" 
+        value="{{ today|date("Y-m-d") }}" 
+        min="2018-01-01" 
+        max="{{ today|date_modify("+14 day")|date("Y-m-d") }}"
+    >
+    <input type="submit">
+</form>
+<table>
+    <thead>
+        <th>Name</th>
+        <th>Surname</th>
+        <th>Phone</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Times Been</th>
+    </thead>
+{% for reservation in reservations %}
+    <tr>
+        <td>{{ reservation.firstname }}</td>
+        <td>{{ reservation.surname }}</td>
+        <td>{{ reservation.phone }}</td>
+        <td>{{ reservation.reservationDate }}</td>
+        <td>{{ reservation.arrivalTime|number_format(2, ":") }}</td>
+        <td>{{ reservation.countcustomerid }}</td>
+        <td>
+            <form action="/cancel"  method="get">
+                <input type="hidden" name="barber" value="barber">
+                <input type="hidden" name="reservationDate" value="{{ reservation.reservationDate }}">
+                <input type="hidden" name="arrivalTime" value="{{ reservation.arrivalTime }}">
+                <button type="submit" onclick="return confirmCancel()" name="Cancel Reservation">Cancel Reservation</button>
+            </form>    
+        </td>
+    </tr>
+{% endfor %}
+</table>
+<script>
+function confirmCancel() {
+  alert("Do you really want to cancel this reservation?");
+}
+</script>
+{% if currentPage != 1 %}
+    <a href="/barber/{{ currentPage - 1 }}">Previous</a>
+{% endif %}
+{% if not lastPage %}
+    <a href="/barber/{{ currentPage + 1 }}">Next</a>
+{% endif %}
+{% endblock %}
+
+

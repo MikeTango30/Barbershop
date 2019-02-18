@@ -1,0 +1,26 @@
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <div style="border: solid 1px">
+        <a href="/barber">Barber</a>
+        <a href="/customer">Customer</a>
+        <hr>
+        <form action="/customer/reservationDate" method="GET" >
+            <input type="date" name="reservationDate" 
+                value="{{ today|date("Y-m-d") }}" 
+                min="{{ today|date("Y-m-d") }}" 
+                max="{{ today|date_modify("+14 day")|date("Y-m-d") }}"
+            >
+            <input type="submit">
+        </form>
+        <hr>
+        <form action="/customer/reservationDate" method="get">
+            <button type="submit" name="reservationDate" value="{{ today }}">Available Today</button> 
+            <button type="submit" name="reservationDate" value="{{ tomorrow }}">Available Tomorrow</button>
+        </form>
+    </div>
+    {% block content %}{% endblock %}
+</body>
+</html>
