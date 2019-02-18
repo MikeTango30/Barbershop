@@ -17,7 +17,7 @@ class ReservationController extends AbstractController
 {
     const PAGE_LENGTH = 10;
     
-    //reservations for barber
+     //reservations for barber
     public function getReservedTimes($page): string {
         $page = (int)$page;
         
@@ -71,7 +71,6 @@ class ReservationController extends AbstractController
         return $this->getByDate(1);
     }
     
-    
     //search for customer by name or surname
     public function search(): string {
         $firstname = $this->request->getParams()->getString("firstname");
@@ -99,7 +98,7 @@ class ReservationController extends AbstractController
         );
         
         $times = new AvailableTimes($this->db);
-        $availableTimes = $times->getAvailableTimes();
+        $availableTimes = $times->getDayAvailableTimes();
         
         $properties = [
             "today" => $today->format("Y-m-d"),
@@ -107,7 +106,8 @@ class ReservationController extends AbstractController
             "availableTimes" => $availableTimes,
             "currentPage" => $page,
             "lastPage" => count($availableTimes) < self::PAGE_LENGTH,
-            "pageLength" => self::PAGE_LENGTH
+            "pageLength" => self::PAGE_LENGTH,
+            "urlParams" => $this->request->getParams()->getAllParametersAsArray()
         ];
         
         return $this->render($identity."AvailableDay.twig", $properties);
@@ -139,7 +139,8 @@ class ReservationController extends AbstractController
             "currentPage" => $page,
             "lastPage" => count($availableTimes) < self::PAGE_LENGTH,
             "pageLength" => self::PAGE_LENGTH,
-            "reservationDate" => $reservationDate
+            "reservationDate" => $reservationDate,
+            "urlParams" => $this->request->getParams()->getAllParametersAsArray()
         ];
         
         return $this->render($identity."AvailableDay.twig", $properties);
@@ -192,9 +193,9 @@ class ReservationController extends AbstractController
             "formParameters" => $formParameters,
             "errors"=> $errors
         ];
-      
-        if (isset($errors) ) {
-             
+     
+        if (!empty($errors) ) {
+    
              return $this->render($identity."ReserveForm.twig", $properties);
         } else {
             

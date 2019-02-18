@@ -77,6 +77,12 @@ class ReservationModel extends AbstractModel
             JOIN customer ON customer.id= reservation.customer_id
             GROUP BY customer.id ORDER BY count(customer.id) DESC
             LIMIT :page, :length";
+            
+            
+    //   $query = "SELECT *, count(customer.id) as reservationCount FROM reservation
+    //         JOIN customer ON customer.id= reservation.customer_id
+    //         GROUP BY customer.id ORDER BY count(customer.id) DESC
+    //         LIMIT :page, :length";
         $sth = $this->db->prepare($query);
         $sth->bindParam("page", $start, PDO::PARAM_INT);
         $sth->bindParam("length", $pageLength, PDO::PARAM_INT);

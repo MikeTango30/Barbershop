@@ -15,15 +15,17 @@ Times
         <td>{{ time }}</td>
         <td>
             <form action="/customer/reserve"  method="get">
-            <button type="submit" name="reservationDate" value="{{ time }}">Reserve Time</button> 
+                <button type="submit" name="reservationDate" value="{{ time }}">Reserve Time</button>
+            </form>
         </td>
     </tr>
 {% endfor %}
 </table>
+
 {% if currentPage != 1 %}
-    <a href="/customer/reservationDate/{{ currentPage - 1 }}">Previous</a>
+    <a href="/customer/reservationDate/{{ currentPage - 1 }}?{{urlParams}}">Previous</a>
 {% endif %}
 {% if not lastPage %}
-    <a href="/customer/reservationDate/{{ currentPage + 1 }}">Next</a>
+    <a href="/customer/reservationDate/{{ currentPage + 1 }}?{{urlParams}}">Next</a>
 {% endif %}
 {% endblock %}

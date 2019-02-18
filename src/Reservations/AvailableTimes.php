@@ -7,8 +7,6 @@ use \DateInterval;
 use \DatePeriod;
 use Barbershop\Models\ReservationModel;
 
-
-
 class AvailableTimes
 {
     const PAGE_LENGTH = 10;
@@ -67,27 +65,32 @@ class AvailableTimes
         return $timesStr;
     }
     
-    public function getAvailableTimes() {
-        $times = $this->getTimes(14);
+    // public function getAvailableTimes() {
+    //     $times = $this->getTimes(14);
         
-        $reservationModel = new ReservationModel($this->db);
-        $reservations = $reservationModel->loadReservations();
+    //     $reservationModel = new ReservationModel($this->db);
+    //     $reservations = $reservationModel->loadReservations();
         
-        foreach($reservations as $reservation) {
-            $reservationsStr[
-                $reservation->getReservationDate()." ".
-                $reservation->getArrivalTime()
-            ] =
-                $reservation->getReservationDate()." ".
-                $reservation->getArrivalTime();
-        }
-        $availableTimes = array_diff($times, $reservationsStr);
+    //     foreach($reservations as $reservation) {
+    //         $reservationsStr[
+    //             $reservation->getReservationDate()." ".
+    //             $reservation->getArrivalTime()
+    //         ] =
+    //             $reservation->getReservationDate()." ".
+    //             $reservation->getArrivalTime();
+    //     }
+    //     $availableTimes = array_diff($times, $reservationsStr);
         
-        return $availableTimes;
-    }
+    //     return $availableTimes;
+    // }
     
-    public function getDayAvailableTimes($day) {
-        $times = $this->getDay($day);
+    public function getDayAvailableTimes($day = null) {
+    
+        if (!is_null($day)) { 
+            $times = $this->getDay($day); 
+        } else {
+            $times = $this->getTimes(14);
+        }
         
         $reservationModel = new ReservationModel($this->db);
         $reservations = $reservationModel->loadReservations();

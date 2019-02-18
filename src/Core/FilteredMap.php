@@ -31,4 +31,19 @@ class FilteredMap
         $value = (string) $this->get($name);
         return $filter ? addslashes($value) : $value;
     }
+    
+    public function getAllParametersAsArray() {
+        $params = [];
+        foreach ($this->map as $field => $value) {
+            $params[] = $field."=".$this->getString($field);
+        }
+        
+        if(is_array($params) && count($params) >0) {
+            $params = implode( "&",$params);
+        } else {
+            $params = array_shift($params);
+        }
+        
+        return $params;
+    }
 }
