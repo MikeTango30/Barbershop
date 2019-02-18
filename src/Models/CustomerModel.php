@@ -91,7 +91,6 @@ class CustomerModel extends AbstractModel
             throw new DbException($sth->errorInfo()[2]);
         }
         $reservation = $sth->fetchAll();
-        var_dump($rerervation);
         
         return $reservation[0];
     }

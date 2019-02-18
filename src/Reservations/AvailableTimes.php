@@ -36,6 +36,7 @@ class AvailableTimes
     }
     
     public function getTimes($days) {
+        $times[] = $this->period;
         for ($i = 0; $i < $days; $i++){
             
             $times[] = $this->modifyPeriod();
@@ -52,11 +53,15 @@ class AvailableTimes
         $startTime = new DateTime($day);
         $endTime = new DateTime($day);
         
-        $this->startTime = $startTime->setTime(10, 0);
-        $this->endTime = $endTime->setTime(20, 0);
-        $this->period = new DatePeriod($this->startTime, $this->interval, $this->endTime);
+        $startTime->setTime(10, 0);
+        $endTime->setTime(20, 0);
+        $period = new DatePeriod($startTime, $this->interval, $endTime);
         
-        foreach($this->period as $dayTime) {
+        // $this->startTime = $startTime->setTime(10, 0);
+        // $this->endTime = $endTime->setTime(20, 0);
+        // $this->period = new DatePeriod($this->startTime, $this->interval, $this->endTime);
+        
+        foreach($period as $dayTime) {
             $timesStr [$dayTime->format('Y-m-d H:i:s')] = $dayTime->format('Y-m-d H:i:s');
         }    
         return $timesStr;

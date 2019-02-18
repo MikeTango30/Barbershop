@@ -10,17 +10,18 @@ Times
         <th>Reserve</th>
         <th></th>
     </thead>
-{% for time in availableTimes|slice((currentPage - 1) * pageLength, pageLength) %}
+{% for reservationDate in availableTimes|slice((currentPage - 1) * pageLength, pageLength) %}
     <tr>
-        <td>{{ time }}</td>
+        <td>{{ reservationDate }}</td>
         <td>
             <form action="/barber/reserve" method="get">
             <input type="hidden" name="barber" value="barber">    
-            <button type="submit" name="reservationDate" value="{{ time }}">Reserve Time</button> 
+            <button type="submit" name="reservationDate" value="{{ reservationDate }}">Reserve Time</button> 
         </td>
     </tr>
 {% endfor %}
 </table>
+
 <nav aria-label="Page navigation example">
     <ul class="pagination">
         <li class="page-item">

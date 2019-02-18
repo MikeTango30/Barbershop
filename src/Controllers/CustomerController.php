@@ -42,7 +42,6 @@ class CustomerController extends AbstractController
         else {
             $customerModel = new CustomerModel($this->db);
             $customer = $customerModel->getCustomer();
-            var_dump($customer);
             $reservation = $customerModel->getReservation($customer);
             
             return $this->render("myReservation.twig", ["params"=>$reservation]);

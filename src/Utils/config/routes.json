@@ -1,10 +1,7 @@
 {
     "": {
         "controller": "Customer",
-        "method":"getMyReservation",
-        "params": {
-            "page": "number"
-        }    
+        "method":"getMyReservation"
     },
     "/:page": {
         "controller": "Customer",
@@ -65,40 +62,57 @@
     },
     "barber": {
         "controller":"Reservation",
-        "method": "getAllReservedTimes"
+        "method": "getAllReservedTimes",
+        "params": {
+            "reservationDate": "string"
+        }
     },
     "barber/:page": {
         "controller": "Reservation",
         "method": "getReservedTimes",
         "params": {
-            "page": "number"
+            "page": "number",
+            "barber": "string"
         }
     },
      "barber/date": {
         "controller": "Reservation",
-        "method": "getByDate",
+        "method": "getAllByDate",
         "params": {
-            "reservationDate": "string"
+            "reservationDate": "string",
+            "barber": "string"
         }
     },
+     "barber/date/:page": {
+        "controller": "Reservation",
+        "method": "getAllByDate",
+        "params": {
+            "reservationDate": "string",
+            "barber": "string",
+            "page":"number"
+        }
+    },    
     "barber/search": {
         "controller": "Reservation",
         "method": "search",
         "params": {
-            "firstname": "string"
+            "firstname": "string",
+            "barber": "string"
         }
     },
     "barber/newReservation": {
         "controller": "Reservation",
         "method": "getAllAvailableTimes",
         "params": {
-            "barber": "string"
+            "barber": "string",
+            "reservationDate": "string"
         }
     },
     "barber/newReservation/:page": {
         "controller": "Reservation",
-        "method": "getAllDayAvailableTimes",
+        "method": "availableTimes",
         "params": {
+            "reservationDate": "string",
             "barber": "string",
             "page": "number"
         }
@@ -115,6 +129,7 @@
         "controller": "Reservation",
         "method": "reserveTime",
         "params": {
+            "barber": "string",
             "reservationDate": "string",
             "firstname": "string",
             "surname": "string",

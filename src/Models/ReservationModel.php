@@ -35,8 +35,8 @@ class ReservationModel extends AbstractModel
         
         $query = "SELECT *, count(customer.id) FROM reservation 
             JOIN customer ON customer.id= reservation.customer_id 
-            WHERE DATE (reservationDate) > DATE(NOW()) AND DATE (reservationDate) < DATE(NOW() + INTERVAL 14 DAY) 
-            GROUP BY customer.id LIMIT :page, :length";
+            WHERE DATE (reservationDate) > TIME(NOW()) AND DATE (reservationDate) < DATE(NOW() + INTERVAL 14 DAY) 
+            GROUP BY arrivalTime LIMIT :page, :length";
         $sth = $this->db->prepare($query);
         $sth->bindParam("page", $start, PDO::PARAM_INT);
         $sth->bindParam("length", $pageLength, PDO::PARAM_INT);
@@ -55,6 +55,7 @@ class ReservationModel extends AbstractModel
 
     }
     
+    //search by name or surname
     public function search($firstname) {
          $query = "SELECT *, count(customer.id) FROM reservation 
             JOIN customer ON customer.id= reservation.customer_id 
@@ -68,8 +69,20 @@ class ReservationModel extends AbstractModel
         return $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
     }
     
-    public function getByTimes($timesBeen) {
-        //TODO  
+    //sort by times been
+    public function getSortedByTimesBeen(int $page, int $pageLength): array {
+        $start = $pageLength * ($page - 1);
+        
+        $query = "SELECT *, count(customer.id) FROM reservation
+            JOIN customer ON customer.id= reservation.customer_id
+            GROUP BY customer.id ORDER BY count(customer.id) DESC
+            LIMIT :page, :length";
+        $sth = $this->db->prepare($query);
+        $sth->bindParam("page", $start, PDO::PARAM_INT);
+        $sth->bindParam("length", $pageLength, PDO::PARAM_INT);
+        $sth->execute();
+        
+        return $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
     }
     
     

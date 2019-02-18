@@ -28,7 +28,7 @@ Reservations
         <td>{{ reservation.phone }}</td>
         <td>{{ reservation.reservationDate }}</td>
         <td>{{ reservation.arrivalTime|number_format(2, ":") }}</td>
-        <td>{{ reservation.countcustomerid }}</td>
+        <td>{{ attribute(reservation, "count(customer.id)") }}</td>
         <td>
             <form action="/cancel"  method="get">
                 <input type="hidden" name="barber" value="barber">
@@ -45,11 +45,25 @@ function confirmCancel() {
   alert("Do you really want to cancel this reservation?");
 }
 </script>
-{% if currentPage != 1 %}
-    <a href="/barber/{{ currentPage - 1 }}">Previous</a>
-{% endif %}
-{% if not lastPage %}
-    <a href="/barber/{{ currentPage + 1 }}">Next</a>
+<nav aria-label="Page navigation example">
+    <ul class="pagination">
+        <li class="page-item">
+            {% if currentPage != 1 %}
+            <a class="page-link" href="/barber/{{ currentPage - 1 }}?barber=barber" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+            </a>
+        </li>
+            {% endif %}
+        <li class="page-item">
+            {% if not lastPage %}
+            <a class="page-link" href="/barber/{{ currentPage + 1 }}?barber=barber" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+            </a>
+        </li>
+  </ul>
+</nav>
 {% endif %}
 {% endblock %}
 

@@ -22,7 +22,7 @@ class SessionManager
     }
     
     //sets session key and value
-    public function setSession($key, $value,$arrival, $request) {
+    public function setSession($key, $value, $arrival) {
         $_SESSION[$key] = $value;
         setcookie($key, $value, ((new \DateTime)->modify($arrival)->getTimestamp()), "/");
     }

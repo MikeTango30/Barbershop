@@ -17,6 +17,7 @@ class ReservationController extends AbstractController
 {
     const PAGE_LENGTH = 10;
     
+    //reservations for barber
     public function getReservedTimes($page): string {
         $page = (int)$page;
         
@@ -37,13 +38,15 @@ class ReservationController extends AbstractController
         
         return $this->render("barberReservations.twig", $properties);
     }
-
+    
+    //reservations for barber - "1" is for $page variable in getReservedTimes($page) method to LIMIT clause in model
     public function getAllReservedTimes(): string {
         
         return $this->getReservedTimes(1);
     }
 
-    public function getByDate(): string {
+    //get reservations by date
+    public function getByDate($page): string {
         $today = new DateTime;
         $tomorrow = new DateTime;
         $tomorrow->modify("+1 day");
@@ -56,13 +59,20 @@ class ReservationController extends AbstractController
             "today" => $today->format("Y-m-d"),
             "tomorrow" => $tomorrow->format("Y-m-d"),
             "reservations" => $reservations,
-            "currentPage" => 1,
-            "lastPage" => true
+            "currentPage" => $page,
+            "lastPage" => count($reservations) < self::PAGE_LENGTH
         ];
         
         return $this->render("barberReservations.twig", $properties);
     }
     
+     public function getAllByDate(): string {
+        
+        return $this->getByDate(1);
+    }
+    
+    
+    //search for customer by name or surname
     public function search(): string {
         $firstname = $this->request->getParams()->getString("firstname");
     
@@ -100,7 +110,7 @@ class ReservationController extends AbstractController
             "pageLength" => self::PAGE_LENGTH
         ];
         
-        return $this->render($identity.".twig", $properties);
+        return $this->render($identity."AvailableDay.twig", $properties);
     }
     
     public function getAllAvailableTimes(): string {
@@ -113,6 +123,11 @@ class ReservationController extends AbstractController
         $tomorrow = new DateTime;
         $tomorrow->modify("+1 day");
         
+        $reservationManager = new ReservationManager($this->db);
+        $identity = $reservationManager->identifyUser(
+            $this->request->getParams()->getString("barber")
+        );
+        
         $reservationDate = $this->request->getParams()->getString("reservationDate");
         $times = new AvailableTimes($this->db);
         $availableTimes = $times->getDayAvailableTimes($reservationDate);
@@ -123,10 +138,11 @@ class ReservationController extends AbstractController
             "availableTimes" => $availableTimes,
             "currentPage" => $page,
             "lastPage" => count($availableTimes) < self::PAGE_LENGTH,
-            "pageLength" => self::PAGE_LENGTH
+            "pageLength" => self::PAGE_LENGTH,
+            "reservationDate" => $reservationDate
         ];
         
-        return $this->render("customerAvailableDay.twig", $properties);
+        return $this->render($identity."AvailableDay.twig", $properties);
     }
     
     public function getAllDayAvailableTimes(): string {
@@ -158,7 +174,7 @@ class ReservationController extends AbstractController
         
         $sessionManager = new SessionManager();
         $sessionManager->startSession();
-        $sessionManager->setSession("phone", $formParameters["phone"], $formParameters["arrival"], $this->request);
+        $sessionManager->setSession("phone", $formParameters["phone"], $formParameters["arrival"]);
     
         $reservationManager = new ReservationManager($this->db);
         $identity = $reservationManager->identifyUser(
