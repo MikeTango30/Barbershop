@@ -16,7 +16,8 @@ class ReservationValidator
             }
         }
         
-        return true;
+        return (empty($this->errors)) ? true : false;
+        
     }
     
     public function getErrors() {
@@ -26,5 +27,4 @@ class ReservationValidator
     public function isFieldNotEmpty ($name): bool {
         return !empty($name) ? true : false;
     }
-    
 }

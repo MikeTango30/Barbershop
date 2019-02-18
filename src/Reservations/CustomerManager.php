@@ -32,15 +32,3 @@ class CustomerManager
         return $customerId;
     }
 }
-
-//     public function saveCustomer($phone, Customer $customer) {
-//         $customerModel = new CustomerModel($this->db);
-//             if ($customerModel->isInserted($phone)) {
-//                 return $customerId = $customerModel->getId($phone);
-//             }
-//             else {
-//                 $customerModel->insertCustomer($customer);
-//                 return $customerId = $this->db->lastInsertId();
-//             }
-//     }
-// }    

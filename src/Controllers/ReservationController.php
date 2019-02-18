@@ -173,7 +173,7 @@ class ReservationController extends AbstractController
                  $identity."ReserveForm.twig", 
                  [
                     "formErrors" => $errors,
-                    "params" => $formParameters["arrival"]
+                    "params" => $formParameters
                  ]
             );
         } else {

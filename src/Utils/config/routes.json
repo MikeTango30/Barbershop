@@ -97,7 +97,7 @@
     },
     "barber/newReservation/:page": {
         "controller": "Reservation",
-        "method": "getAllAvailableTimes",
+        "method": "getAllDayAvailableTimes",
         "params": {
             "barber": "string",
             "page": "number"

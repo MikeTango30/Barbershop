@@ -12,7 +12,7 @@ use PDO;
 
 class CustomerModel extends AbstractModel 
 {
-    const CLASSNAME = "Barbershop\Domain\Customer";
+    const CLASSNAME = 'Barbershop\Domain\Customer';
 
     
     //inserts new customer
@@ -44,7 +44,7 @@ class CustomerModel extends AbstractModel
             throw new DbException($sth->errorInfo()[2]);
         }
         
-        return !empty($sth->fetchAll()) ? true : false;
+        return !empty($sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME)) ? true : false;
     }
     
     public function getId($phone) {
@@ -60,7 +60,6 @@ class CustomerModel extends AbstractModel
         }
         
         $customerId = $sth->fetchAll(PDO::FETCH_COLUMN);
-        var_dump($customerId);
         return $customerId[0];
         
     }
@@ -76,6 +75,7 @@ class CustomerModel extends AbstractModel
             throw new DbException($sth->errorInfo()[2]);
         }
         $customer = $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
+        
         return $customer[0];
     }
     
@@ -90,7 +90,8 @@ class CustomerModel extends AbstractModel
         if (!$sth->execute()) {
             throw new DbException($sth->errorInfo()[2]);
         }
-        $reservation = $sth->fetchAll(PDO::FETCH_CLASS, Reservation::class);
+        $reservation = $sth->fetchAll();
+        var_dump($rerervation);
         
         return $reservation[0];
     }

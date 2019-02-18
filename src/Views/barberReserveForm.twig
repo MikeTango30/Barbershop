@@ -8,6 +8,7 @@ Reserve Time
 <h2>You chose {{ params }}</h2>
 <h3>Please fill this form and press Reserve button</h3>
 
+{{dump(formErrors)}}
 
 <form action="/barber/reserved" method="POST">
             <label>Reservation Form</label>
