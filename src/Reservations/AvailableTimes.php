@@ -55,34 +55,11 @@ class AvailableTimes
         $endTime->setTime(20, 0);
         $period = new DatePeriod($startTime, $this->interval, $endTime);
         
-        // $this->startTime = $startTime->setTime(10, 0);
-        // $this->endTime = $endTime->setTime(20, 0);
-        // $this->period = new DatePeriod($this->startTime, $this->interval, $this->endTime);
-        
         foreach($period as $dayTime) {
             $timesStr [$dayTime->format('Y-m-d H:i:s')] = $dayTime->format('Y-m-d H:i:s');
         }    
         return $timesStr;
     }
-    
-    // public function getAvailableTimes() {
-    //     $times = $this->getTimes(14);
-        
-    //     $reservationModel = new ReservationModel($this->db);
-    //     $reservations = $reservationModel->loadReservations();
-        
-    //     foreach($reservations as $reservation) {
-    //         $reservationsStr[
-    //             $reservation->getReservationDate()." ".
-    //             $reservation->getArrivalTime()
-    //         ] =
-    //             $reservation->getReservationDate()." ".
-    //             $reservation->getArrivalTime();
-    //     }
-    //     $availableTimes = array_diff($times, $reservationsStr);
-        
-    //     return $availableTimes;
-    // }
     
     public function getDayAvailableTimes($day = null) {
     
@@ -104,7 +81,6 @@ class AvailableTimes
                 $reservation->getArrivalTime();
         }
         $availableTimes = array_diff($times, $reservationsStr);
-        
         return $availableTimes;
     }
 }

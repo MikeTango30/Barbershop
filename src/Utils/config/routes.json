@@ -12,7 +12,7 @@
     },
     "customer": {
         "controller": "Reservation",
-        "method": "getAllAvailableTimes"
+        "method": "availableTimes"
     },
     "customer/:page": {
         "controller": "Reservation",
@@ -23,7 +23,7 @@
     },
     "customer/reservationDate": {
         "controller": "Reservation",
-        "method": "getAllDayAvailableTimes",
+        "method": "dayAvailableTime",
         "params": {
             "reservationDate": "string"
         }

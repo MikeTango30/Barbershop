@@ -25,7 +25,7 @@ Times
 {% if currentPage != 1 %}
     <a href="/customer/reservationDate/{{ currentPage - 1 }}?{{urlParams}}">Previous</a>
 {% endif %}
-{% if not lastPage %}
+{% if not availableTimes|slice((currentPage - 1) * pageLength, pageLength) < pageLength %}
     <a href="/customer/reservationDate/{{ currentPage + 1 }}?{{urlParams}}">Next</a>
 {% endif %}
 {% endblock %}

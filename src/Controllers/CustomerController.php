@@ -16,9 +16,7 @@ class CustomerController extends AbstractController
     public function getCustomerReservation($page) {
         $page = (int) $page;
         
-        $today = new DateTime;
-        $tomorrow = new DateTime;
-        $tomorrow->modify("+1 day");
+        $todayTomorrow = $this->getTodayTomorrow();
         
         $sessionManager = new SessionManager();
         $sessionManager->startSession();
@@ -28,8 +26,8 @@ class CustomerController extends AbstractController
             $availableTimes = $times->getAvailableTimes($page);
             
             $properties = [
-            "today" => $today->format("Y-m-d"),
-            "tomorrow" => $tomorrow->format("Y-m-d"),
+            "today" => $todayTomorrow["today"]->format("Y-m-d"),
+            "tomorrow" => $todayTomorrow["tomorrow"]->format("Y-m-d"),
             "availableTimes" => $availableTimes,
             "currentPage" => 1,
             "lastPage" => count($availableTimes) < self::PAGE_LENGTH,

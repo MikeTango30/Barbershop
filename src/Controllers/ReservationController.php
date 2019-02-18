@@ -20,17 +20,14 @@ class ReservationController extends AbstractController
      //reservations for barber
     public function getReservedTimes($page): string {
         $page = (int)$page;
-        
-        $today = new DateTime;
-        $tomorrow = new DateTime;
-        $tomorrow->modify("+1 day");
+        $todayTomorrow = $this->getTodayTomorrow();
         
         $reservationModel = new ReservationModel($this->db);
         $reservations = $reservationModel->getAll($page, self::PAGE_LENGTH);
 
         $properties = [
-            "today" => $today->format("Y-m-d"),
-            "tomorrow" => $tomorrow->format("Y-m-d"),
+            "today" => $todayTomorrow["today"]->format("Y-m-d"),
+            "tomorrow" => $todayTomorrow["tomorrow"]->format("Y-m-d"),
             "reservations" => $reservations,
             "currentPage" => $page,
             "lastPage" => count($reservations) < self::PAGE_LENGTH
@@ -47,9 +44,7 @@ class ReservationController extends AbstractController
 
     //get reservations by date
     public function getByDate($page): string {
-        $today = new DateTime;
-        $tomorrow = new DateTime;
-        $tomorrow->modify("+1 day");
+        $todayTomorrow = $this->getTodayTomorrow();
         
         $reservationDate = $this->request->getParams()->getString("reservationDate");
         $reservationModel = new ReservationModel($this->db);
@@ -87,22 +82,18 @@ class ReservationController extends AbstractController
     }
     
     //gets all available times
-    public function availableTimes($page) {
-        $today = new DateTime;
-        $tomorrow = new DateTime;
-        $tomorrow->modify("+1 day");
+    public function availableTimes($page = 1) {
+        $todayTomorrow = $this->getTodayTomorrow();
         
-        $reservationManager = new ReservationManager($this->db);
-        $identity = $reservationManager->identifyUser(
-            $this->request->getParams()->getString("barber")
-        );
+        $identity = $this->identifyUser();
         
         $times = new AvailableTimes($this->db);
         $availableTimes = $times->getDayAvailableTimes();
+  
         
         $properties = [
-            "today" => $today->format("Y-m-d"),
-            "tomorrow" => $tomorrow->format("Y-m-d"),
+            "today" => $todayTomorrow["today"]->format("Y-m-d"),
+            "tomorrow" => $todayTomorrow["tomorrow"]->format("Y-m-d"),
             "availableTimes" => $availableTimes,
             "currentPage" => $page,
             "lastPage" => count($availableTimes) < self::PAGE_LENGTH,
@@ -110,34 +101,22 @@ class ReservationController extends AbstractController
             "urlParams" => $this->request->getParams()->getAllParametersAsArray()
         ];
         
-        return $this->render($identity."AvailableDay.twig", $properties);
+        return $this->render($identity.".twig", $properties);
     }
     
-    public function getAllAvailableTimes(): string {
-        
-        return $this->availableTimes(1);
-    }
-    
-    public function dayAvailableTime($page) {
-        $today = new DateTime;
-        $tomorrow = new DateTime;
-        $tomorrow->modify("+1 day");
-        
-        $reservationManager = new ReservationManager($this->db);
-        $identity = $reservationManager->identifyUser(
-            $this->request->getParams()->getString("barber")
-        );
+    public function dayAvailableTime($page = 1) {
+        $todayTomorrow = $this->getTodayTomorrow();
+        $identity = $this->identifyUser();
         
         $reservationDate = $this->request->getParams()->getString("reservationDate");
         $times = new AvailableTimes($this->db);
         $availableTimes = $times->getDayAvailableTimes($reservationDate);
-        
+        var_dump(count($availableTimes));
         $properties = [
-            "today" => $today->format("Y-m-d"),
-            "tomorrow" => $tomorrow->format("Y-m-d"),
+            "today" => $todayTomorrow["today"]->format("Y-m-d"),
+            "tomorrow" => $todayTomorrow["tomorrow"]->format("Y-m-d"),
             "availableTimes" => $availableTimes,
             "currentPage" => $page,
-            "lastPage" => count($availableTimes) < self::PAGE_LENGTH,
             "pageLength" => self::PAGE_LENGTH,
             "reservationDate" => $reservationDate,
             "urlParams" => $this->request->getParams()->getAllParametersAsArray()
@@ -146,19 +125,10 @@ class ReservationController extends AbstractController
         return $this->render($identity."AvailableDay.twig", $properties);
     }
     
-    public function getAllDayAvailableTimes(): string {
-        
-        return $this->dayAvailableTime(1);
-    }
-    
     //renders form of chosen time
     public function chooseTime() {
         $arrivalTime = $this->request->getParams()->getString("reservationDate");
-         
-        $reservationManager = new ReservationManager($this->db);
-        $identity = $reservationManager->identifyUser(
-            $this->request->getParams()->getString("barber")
-        );
+        $identity = $this->identifyUser();
         
         return $this->render($identity."ReserveForm.twig", ["params"=>$arrivalTime]);
     }
@@ -172,24 +142,21 @@ class ReservationController extends AbstractController
             "surname" => $this->request->getParams()->getString("surname"),
             "phone" => $this->request->getParams()->getString("phone")
         ];
+        var_dump($formParameters);
         
-        $today = new DateTime;
-        $tomorrow = new DateTime;
-        $tomorrow->modify("+1 day");
+        $todayTomorrow = $this->getTodayTomorrow();
+        $identity = $this->identifyUser();
         
         $sessionManager = new SessionManager();
         $sessionManager->startSession();
         $sessionManager->setSession("phone", $formParameters["phone"], $formParameters["arrival"]);
     
         $reservationManager = new ReservationManager($this->db);
-        $identity = $reservationManager->identifyUser(
-            $this->request->getParams()->getString("barber")
-        );
-      
         $errors = $reservationManager->manageReservation($formParameters);
+        
         $properties = [
-            "today" => $today->format("Y-m-d"),
-            "tomorrow" => $tomorrow->format("Y-m-d"),
+            "today" => $todayTomorrow["today"]->format("Y-m-d"),
+            "tomorrow" => $todayTomorrow["tomorrow"]->format("Y-m-d"),
             "formParameters" => $formParameters,
             "errors"=> $errors
         ];
@@ -211,10 +178,7 @@ class ReservationController extends AbstractController
         $reservationModel = new ReservationModel($this->db);
         $reservationModel->cancelReservation($reservationDate, $arrivalTime);
         
-        $reservationManager = new ReservationManager($this->db);
-        $identity = $reservationManager->identifyUser(
-            $this->request->getParams()->getString("barber")
-        );
+        $identity = $this->identifyUser();
         
         if ($identity == "barber") {
             

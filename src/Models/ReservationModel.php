@@ -18,7 +18,7 @@ class ReservationModel extends AbstractModel
     
     //todo
     public function getByDate($reservationDate) {
-        $query = "SELECT *, count(customer.id) FROM reservation 
+        $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation 
             JOIN customer ON customer.id= reservation.customer_id 
             WHERE DATE (reservationDate) = DATE(:reservationDate) 
             GROUP BY arrivalTime";
@@ -33,7 +33,7 @@ class ReservationModel extends AbstractModel
     public function getAll(int $page, int $pageLength): array {
         $start = $pageLength * ($page - 1);
         
-        $query = "SELECT *, count(customer.id) FROM reservation 
+        $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation 
             JOIN customer ON customer.id= reservation.customer_id 
             WHERE DATE (reservationDate) > TIME(NOW()) AND DATE (reservationDate) < DATE(NOW() + INTERVAL 14 DAY) 
             GROUP BY arrivalTime LIMIT :page, :length";
@@ -57,7 +57,7 @@ class ReservationModel extends AbstractModel
     
     //search by name or surname
     public function search($firstname) {
-         $query = "SELECT *, count(customer.id) FROM reservation 
+         $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation 
             JOIN customer ON customer.id= reservation.customer_id 
             WHERE firstname LIKE :firstname OR surname LIKE :surname 
             GROUP BY arrivalTime";
@@ -73,7 +73,7 @@ class ReservationModel extends AbstractModel
     public function getSortedByTimesBeen(int $page, int $pageLength): array {
         $start = $pageLength * ($page - 1);
         
-        $query = "SELECT *, count(customer.id) FROM reservation
+        $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation
             JOIN customer ON customer.id= reservation.customer_id
             GROUP BY customer.id ORDER BY count(customer.id) DESC
             LIMIT :page, :length";
@@ -92,21 +92,28 @@ class ReservationModel extends AbstractModel
     }
     
     
-    //  //load all reservations
-    // public function doesReservationExist($customerId, $date) {
-    //     $query = "SELECT * FROM reservation WHERE customer_id = :customerId";
-    //     $sth = $this->db->prepare($query);
-    //     $sth->bindParam("customer_id", $customeId, PDO::PARAM_STR);
-    //     $sth->execute();
+    //  //check for active reservation
+    public function doesReservationExist($customerId): bool {
+        $query = "SELECT * FROM reservation 
+            WHERE ((DATE (reservationDate) AND TIME (arrivalTime)) >= 
+            (DATE(NOW()) AND TIME(NOW()))) AND customer_id = :customer_id";
+        $sth = $this->db->prepare($query);
+        $sth->bindParam("customer_id", $customeId, PDO::PARAM_INT);
+        $sth->execute();
         
-    //     return !empty($sth->fetchAll ()) ? true : false;
-    // }    
+         if (!$sth->execute()) {
+            throw new DbException($sth->errorInfo()[2]);
+        }
+        
+        return empty($sth->fetchAll()) ? true : false;
+    }    
     
     
     //insert reservation into Db
     public function createReservation(Reservation $reservation) {
     
-        $query = "INSERT INTO reservation (customer_id, reservationDate, arrivalTime) VALUES(:customer_id, :reservationDate, :arrivalTime)";
+        $query = "INSERT INTO reservation (customer_id, reservationDate, arrivalTime) 
+            VALUES(:customer_id, :reservationDate, :arrivalTime)";
         $customerId = $reservation->getCustomerId();
         $reservationDate = $reservation->getReservationDate();
         $arrivalTime = $reservation->getArrivalTime();

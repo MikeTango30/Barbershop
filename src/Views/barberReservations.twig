@@ -28,7 +28,7 @@ Reservations
         <td>{{ reservation.phone }}</td>
         <td>{{ reservation.reservationDate }}</td>
         <td>{{ reservation.arrivalTime|number_format(2, ":") }}</td>
-        <td>{{ attribute(reservation, "count(customer.id)") }}</td>
+        <td>{{ reservation.reservationCount }}</td>
         <td>
             <form action="/cancel"  method="get">
                 <input type="hidden" name="barber" value="barber">

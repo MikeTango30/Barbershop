@@ -21,9 +21,9 @@ Times
 {% endfor %}
 </table>
 {% if currentPage != 1 %}
-    <a href="/customer/{{ currentPage - 1 }}">Previous</a>
+    <a href="/customer/{{ currentPage - 1 }}?{{urlParams}}">Previous</a>
 {% endif %}
-{% if not lastPage %}
-    <a href="/customer/{{ currentPage + 1 }}">Next</a>
+{% if not availableTimes|slice((currentPage - 1) * pageLength, pageLength) < pageLength %}
+    <a href="/customer/{{ currentPage + 1 }}?{{urlParams}}">Next</a>
 {% endif %}
 {% endblock %}
