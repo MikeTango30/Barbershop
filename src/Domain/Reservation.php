@@ -9,13 +9,6 @@ class Reservation
     private $arrivalTime;
     private $reservationDate;
     private $customer_id;
-    //private $db;
-   
-    
-    
-    // public function __construct($db) {
-    //     $this->db = $db;
-    // }
     
     public function getArrivalTime() {
         return $this->arrivalTime;

@@ -28,8 +28,6 @@ class ReservationManager
             $customerManager = new CustomerManager($this->db);
             $customerId = $customerManager->createCustomer($formParameters);
             
-            var_dump($customerId);
-            
             //insert reservation
             $reservation = new Reservation();
             $reservation->setCustomerId($customerId);
@@ -46,7 +44,6 @@ class ReservationManager
             }
         
         } 
-            
             
         if ($check->getErrors()) {
             $errors["formErrors"] = $check->getErrors();

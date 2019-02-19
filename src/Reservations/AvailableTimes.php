@@ -69,8 +69,6 @@ class AvailableTimes
             $times = $this->getTimes(14);
         }
         
-        var_dump($day);
-        
         $reservationModel = new ReservationModel($this->db);
         $reservations = $reservationModel->loadReservations();
         

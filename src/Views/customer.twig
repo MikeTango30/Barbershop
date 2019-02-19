@@ -10,6 +10,8 @@ Times
         <th>Reserve</th>
         <th></th>
     </thead>
+    
+
 {% for time in availableTimes|slice((currentPage - 1) * pageLength, pageLength) %}
     <tr>
         <td>{{ time }}</td>

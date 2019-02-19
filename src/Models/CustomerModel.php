@@ -92,8 +92,6 @@ class CustomerModel extends AbstractModel
         }
         $reservation = $sth->fetchAll();
         
-        var_dump($reservation);
-        
         return $reservation[0];
     }
 }
