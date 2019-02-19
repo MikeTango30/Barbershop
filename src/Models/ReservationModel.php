@@ -22,13 +22,8 @@ class ReservationModel extends AbstractModel
     public function getByDate($reservationDate = null, int $page, int $pageLength, $sorted): array {
         $start = $pageLength * ($page - 1);
         $sorted ? $sorted = $this->sorted : $sorted = $this->notSorted;
-        
-        // $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation
-        //     JOIN customer ON customer.id= reservation.customer_id 
-        //     WHERE DATE (reservationDate) = DATE(:reservationDate) 
-        //     GROUP BY ".$sorted."LIMIT :page, :length";
-           
-           $where = ""; 
+
+        $where = ""; 
             
         if(!empty($reservationDate)) {
            $where = " WHERE DATE(reservationDate) = DATE(:reservationDate)";
@@ -53,31 +48,6 @@ class ReservationModel extends AbstractModel
     
         return $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
     }
-    
-    // //get reservations for two weeks, 10 per page
-    // public function getAll(int $page, int $pageLength, $sorted): array {
-    //     $start = $pageLength * ($page - 1);
-        
-    //     $sorted ? $sorted = $this->sorted : $sorted = $this->notSorted;
-    //     var_dump($sorted);
-    //     // $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation
-    //     //     JOIN customer ON customer.id= reservation.customer_id 
-    //     //     WHERE DATE (reservationDate) >= DATE(NOW())
-    //     //     GROUP BY ".$sorted." LIMIT :page, :length";
-            
-            
-    //             $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation
-    //         JOIN customer ON customer.id= reservation.customer_id 
-    //         WHERE  reservationDate >= DATE(NOW())
-    //         GROUP BY customer_id ORDER BY reservationDate ASC LIMIT :page, :length";
-    
-    //     $sth = $this->db->prepare($query);
-    //     $sth->bindParam("page", $start, PDO::PARAM_INT);
-    //     $sth->bindParam("length", $pageLength, PDO::PARAM_INT);
-    //     $sth->execute();
-        
-    //     return $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
-    // }
     
     //load all reservations
     public function loadReservations() {
@@ -113,12 +83,7 @@ class ReservationModel extends AbstractModel
             JOIN customer ON customer.id= reservation.customer_id
             GROUP BY customer.id ORDER BY reservationCount DESC
             LIMIT :page, :length";
-            
-            
-    //   $query = "SELECT *, count(customer.id) as reservationCount FROM reservation
-    //         JOIN customer ON customer.id= reservation.customer_id
-    //         GROUP BY customer.id ORDER BY count(customer.id) DESC
-    //         LIMIT :page, :length";
+        
         $sth = $this->db->prepare($query);
         $sth->bindParam("page", $start, PDO::PARAM_INT);
         $sth->bindParam("length", $pageLength, PDO::PARAM_INT);
