@@ -1,0 +1,9 @@
+{
+    "db": {
+    "host": "eu-cdbr-west-02.cleardb.net",
+    "name": "heroku_4855659825122eb",
+    "user": "b8bace8f37f43e",
+    "password": "9f8509b7"
+    },
+    "log": "var/log/barbershop.log"
+}
