@@ -20,13 +20,15 @@ class ReservationManager
         return (empty($formParam)) ? "customer" : "barber";
      }
      
-     public function manageReservation($formParameters) {
+    public function manageReservation($formParameters) {
         $check = new ReservationValidator();
         $errors = null;
-         if ($check->isReservationValid($formParameters) ) { 
+        if ($check->isReservationValid($formParameters) ) { 
             // create customer 
             $customerManager = new CustomerManager($this->db);
             $customerId = $customerManager->createCustomer($formParameters);
+            
+            var_dump($customerId);
             
             //insert reservation
             $reservation = new Reservation();
@@ -37,15 +39,18 @@ class ReservationManager
             // create reservation 
             $reservationModel = new ReservationModel($this->db);
 
-            if(!$reservationModel->doesReservationNotExist($customerId)) {
+            if($reservationModel->doesReservationNotExist($customerId)) {
                 $reservationModel->createReservation($reservation);
             } else {
                 $errors["reservationExists"] = "You cannot have more than one active reservation";
             }
+        
         } 
-            if ($check->getErrors()) {
-                $errors["formErrors"] = $check->getErrors();
-            }
+            
+            
+        if ($check->getErrors()) {
+            $errors["formErrors"] = $check->getErrors();
+        }
             
         return $errors;
     }

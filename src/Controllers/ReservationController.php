@@ -17,34 +17,35 @@ class ReservationController extends AbstractController
 {
     const PAGE_LENGTH = 10;
     
-     //reservations for barber
-    public function getReservedTimes($page = 1): string {
-        $page = (int)$page;
-        $todayTomorrow = $this->getTodayTomorrow();
+    //  //reservations for barber
+    // public function getReservedTimes($page = 1): string {
+    //     $page = (int)$page;
+    //     $todayTomorrow = $this->getTodayTomorrow();
         
-        $sorted = $this->request->getParams()->has("sort");
+    //     $sorted = $this->request->getParams()->has("sort");
+    
         
-        $reservationModel = new ReservationModel($this->db);
-        $reservations = $reservationModel->getAll($page, self::PAGE_LENGTH, $sorted);
+    //     $reservationModel = new ReservationModel($this->db);
+    //     $reservations = $reservationModel->getAll($page, self::PAGE_LENGTH, $sorted);
 
-        $properties = [
-            "today" => $todayTomorrow["today"]->format("Y-m-d"),
-            "tomorrow" => $todayTomorrow["tomorrow"]->format("Y-m-d"),
-            "reservations" => $reservations,
-            "currentPage" => $page,
-            "lastPage" => count($reservations) < self::PAGE_LENGTH,
-            "urlParams" => $this->request->getParams()->getAllParametersAsArray()
-        ];
+    //     $properties = [
+    //         "today" => $todayTomorrow["today"]->format("Y-m-d"),
+    //         "tomorrow" => $todayTomorrow["tomorrow"]->format("Y-m-d"),
+    //         "reservations" => $reservations,
+    //         "currentPage" => $page,
+    //         "lastPage" => count($reservations) < self::PAGE_LENGTH,
+    //         "urlParams" => $this->request->getParams()->getAllParametersAsArray()
+    //     ];
         
-        return $this->render("barberReservations.twig", $properties);
-    }
+    //     return $this->render("barberReservations.twig", $properties);
+    // }
 
     //get reservations by date
     public function getByDate($page = 1) {
         $todayTomorrow = $this->getTodayTomorrow();
         $reservationDate = $this->request->getParams()->getString("reservationDate");
         $sorted = $this->request->getParams()->has("sort");
-        
+
         $reservationModel = new ReservationModel($this->db);
         $reservations = $reservationModel->getByDate($reservationDate, $page, self::PAGE_LENGTH, $sorted);
         
@@ -54,7 +55,8 @@ class ReservationController extends AbstractController
             "reservations" => $reservations,
             "currentPage" => $page,
             "lastPage" => count($reservations) < self::PAGE_LENGTH,
-            "urlParams" => $this->request->getParams()->getAllParametersAsArray()
+            "urlParams" => $this->request->getParams()->getAllParametersAsArray(),
+            "reservationDate" => $reservationDate
         ];
         
         return $this->render("barberReservations.twig", $properties);
@@ -81,9 +83,10 @@ class ReservationController extends AbstractController
         $todayTomorrow = $this->getTodayTomorrow();
         
         $identity = $this->identifyUser();
-        
+        $reservationDate = $this->request->getParams()->getString("reservationDate");
+          
         $times = new AvailableTimes($this->db);
-        $availableTimes = $times->getDayAvailableTimes();
+        $availableTimes = $times->getDayAvailableTimes($page, $reservationDate);
   
         $properties = [
             "today" => $todayTomorrow["today"]->format("Y-m-d"),
@@ -92,33 +95,34 @@ class ReservationController extends AbstractController
             "currentPage" => $page,
             "lastPage" => count($availableTimes) < self::PAGE_LENGTH,
             "pageLength" => self::PAGE_LENGTH,
-            "urlParams" => $this->request->getParams()->getAllParametersAsArray()
+            "urlParams" => $this->request->getParams()->getAllParametersAsArray(),
+            "reservationDate" => $reservationDate
         ];
         
         return $this->render($identity.".twig", $properties);
     }
     
-    public function dayAvailableTime($page = 1) {
-        $todayTomorrow = $this->getTodayTomorrow();
-        $identity = $this->identifyUser();
+    // public function dayAvailableTime($page = 1) {
+    //     $todayTomorrow = $this->getTodayTomorrow();
+    //     $identity = $this->identifyUser();
         
-        $reservationDate = $this->request->getParams()->getString("reservationDate");
+    //     $reservationDate = $this->request->getParams()->getString("reservationDate");
         
-        $times = new AvailableTimes($this->db);
-        $availableTimes = $times->getDayAvailableTimes($reservationDate);
+    //     $times = new AvailableTimes($this->db);
+    //     $availableTimes = $times->getDayAvailableTimes($reservationDate);
         
-        $properties = [
-            "today" => $todayTomorrow["today"]->format("Y-m-d"),
-            "tomorrow" => $todayTomorrow["tomorrow"]->format("Y-m-d"),
-            "availableTimes" => $availableTimes,
-            "currentPage" => $page,
-            "pageLength" => self::PAGE_LENGTH,
-            "reservationDate" => $reservationDate,
-            "urlParams" => $this->request->getParams()->getAllParametersAsArray()
-        ];
+    //     $properties = [
+    //         "today" => $todayTomorrow["today"]->format("Y-m-d"),
+    //         "tomorrow" => $todayTomorrow["tomorrow"]->format("Y-m-d"),
+    //         "availableTimes" => $availableTimes,
+    //         "currentPage" => $page,
+    //         "pageLength" => self::PAGE_LENGTH,
+    //         "reservationDate" => $reservationDate,
+    //         "urlParams" => $this->request->getParams()->getAllParametersAsArray()
+    //     ];
         
-        return $this->render($identity."AvailableDay.twig", $properties);
-    }
+    //     return $this->render($identity."AvailableDay.twig", $properties);
+    // }
     
     //renders form of chosen time
     public function chooseTime() {
@@ -176,8 +180,10 @@ class ReservationController extends AbstractController
         
         if ($identity == "barber") {
             
-            return $this->getReservedTimes();
+            return $this->getByDate();
         } else {
+            
+            // availableTimes
             
             return $this->getAvailableTimes();
         }    

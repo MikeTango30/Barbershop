@@ -8,7 +8,7 @@ use Barbershop\Exceptions\NotFoundException;
 use Barbershop\Models\AbstractModel;
 use Barbershop\Reservations\SessionManager;
 use Barbershop\Controllers\ErrorController;
-
+use DateTime;
 use PDO;
 
 class ReservationModel extends AbstractModel
@@ -16,44 +16,68 @@ class ReservationModel extends AbstractModel
     //const PAGE_LENGTH = 3;
     const CLASSNAME = "Barbershop\Domain\Reservation";
     
-    private $sorted = " customer_id ORDER BY reservationCount DESC ";
-    private $notSorted = " arrivalTime ";
+    private $sorted = " ORDER BY reservationCount DESC ";
+    private $notSorted = " ORDER BY CONCAT(reservationDate, arrivalTime) ASC ";
     
-    //todo
-    public function getByDate($reservationDate, int $page, int $pageLength, $sorted): array {
+    public function getByDate($reservationDate = null, int $page, int $pageLength, $sorted): array {
         $start = $pageLength * ($page - 1);
         $sorted ? $sorted = $this->sorted : $sorted = $this->notSorted;
         
+        // $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation
+        //     JOIN customer ON customer.id= reservation.customer_id 
+        //     WHERE DATE (reservationDate) = DATE(:reservationDate) 
+        //     GROUP BY ".$sorted."LIMIT :page, :length";
+           
+           $where = ""; 
+            
+        if(!empty($reservationDate)) {
+           $where = " WHERE DATE(reservationDate) = DATE(:reservationDate)";
+        } else if (!$sorted){
+            $where = " WHERE reservationDate >= DATE(NOW()) ";
+        }
+            
         $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation
-            JOIN customer ON customer.id= reservation.customer_id 
-            WHERE DATE (reservationDate) = DATE(:reservationDate) 
-            GROUP BY ".$sorted."LIMIT :page, :length";
+                  JOIN customer ON customer.id= reservation.customer_id 
+                  ". $where ." GROUP BY customer_id 
+                  ". $sorted ."
+                  
+                  LIMIT :page, :length";
+    
         $sth = $this->db->prepare($query);
         $sth->bindParam("page", $start, PDO::PARAM_INT);
         $sth->bindParam("length", $pageLength, PDO::PARAM_INT);
-        $sth->bindParam("reservationDate", $reservationDate, PDO::PARAM_STR);
+        if(!empty($reservationDate) ) {
+             $sth->bindParam("reservationDate", $reservationDate, PDO::PARAM_STR);
+        }
         $sth->execute();
-        
+    
         return $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
     }
     
-    //get reservations for two weeks, 10 per page
-    public function getAll(int $page, int $pageLength, $sorted): array {
-        $start = $pageLength * ($page - 1);
+    // //get reservations for two weeks, 10 per page
+    // public function getAll(int $page, int $pageLength, $sorted): array {
+    //     $start = $pageLength * ($page - 1);
         
-        $sorted ? $sorted = $this->sorted : $sorted = $this->notSorted;
-        var_dump($sorted);
-        $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation
-            JOIN customer ON customer.id= reservation.customer_id 
-            WHERE DATE (reservationDate) AND TIME(arrivalTime) >= DATE(NOW()) AND TIME(NOW()) AND DATE (reservationDate) < DATE(NOW() + INTERVAL 14 DAY) 
-            GROUP BY ".$sorted." LIMIT :page, :length";
-        $sth = $this->db->prepare($query);
-        $sth->bindParam("page", $start, PDO::PARAM_INT);
-        $sth->bindParam("length", $pageLength, PDO::PARAM_INT);
-        $sth->execute();
+    //     $sorted ? $sorted = $this->sorted : $sorted = $this->notSorted;
+    //     var_dump($sorted);
+    //     // $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation
+    //     //     JOIN customer ON customer.id= reservation.customer_id 
+    //     //     WHERE DATE (reservationDate) >= DATE(NOW())
+    //     //     GROUP BY ".$sorted." LIMIT :page, :length";
+            
+            
+    //             $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation
+    //         JOIN customer ON customer.id= reservation.customer_id 
+    //         WHERE  reservationDate >= DATE(NOW())
+    //         GROUP BY customer_id ORDER BY reservationDate ASC LIMIT :page, :length";
+    
+    //     $sth = $this->db->prepare($query);
+    //     $sth->bindParam("page", $start, PDO::PARAM_INT);
+    //     $sth->bindParam("length", $pageLength, PDO::PARAM_INT);
+    //     $sth->execute();
         
-        return $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
-    }
+    //     return $sth->fetchAll(PDO::FETCH_CLASS, self::CLASSNAME);
+    // }
     
     //load all reservations
     public function loadReservations() {
@@ -72,7 +96,7 @@ class ReservationModel extends AbstractModel
         $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation 
             JOIN customer ON customer.id= reservation.customer_id 
             WHERE firstname LIKE :firstname OR surname LIKE :surname 
-            GROUP BY ".$sorted."";
+            ".$sorted."";
         $sth = $this->db->prepare($query);
         $sth->bindValue("firstname", "%$firstname%");
         $sth->bindValue("surname", "%$firstname%");
@@ -106,14 +130,13 @@ class ReservationModel extends AbstractModel
     
     //  //check for active reservation
     public function doesReservationNotExist($customerId): bool {
-        $query = "SELECT * FROM reservation 
-            WHERE ((DATE (reservationDate) AND TIME (arrivalTime)) >= 
-            (DATE(NOW()) AND TIME(NOW()))) AND customer_id = :customer_id";
+        $query = "SELECT * FROM reservation WHERE customer_id = :customer_id";
+
         $sth = $this->db->prepare($query);
-        $sth->bindParam("customer_id", $customeId, PDO::PARAM_INT);
-        $sth->execute();
+        $sth->bindParam("customer_id", $customerId, PDO::PARAM_INT);
         
-         if (!$sth->execute()) {
+    
+        if (!$sth->execute()) {
             throw new DbException($sth->errorInfo()[2]);
         }
         

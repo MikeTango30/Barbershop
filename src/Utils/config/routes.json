@@ -23,14 +23,14 @@
     },
     "customer/reservationDate": {
         "controller": "Reservation",
-        "method": "dayAvailableTime",
+        "method": "availableTimes",
         "params": {
             "reservationDate": "string"
         }
     },
     "customer/reservationDate/:page": {
         "controller": "Reservation",
-        "method": "dayAvailableTime",
+        "method": "availableTimes",
         "params": {
             "reservationDate": "string",
             "page": "number"
@@ -62,7 +62,7 @@
     },
     "barber": {
         "controller":"Reservation",
-        "method": "getReservedTimes",
+        "method": "getByDate",
         "params": {
             "reservationDate": "string",
             "barber":"string",
@@ -71,32 +71,14 @@
     },
     "barber/:page": {
         "controller": "Reservation",
-        "method": "getReservedTimes",
+        "method": "getByDate",
         "params": {
+            "reservationDate": "string",
             "page": "number",
             "barber": "string",
             "sort":"string"
         }
     },
-     "barber/date": {
-        "controller": "Reservation",
-        "method": "getByDate",
-        "params": {
-            "reservationDate": "string",
-            "barber": "string",
-            "sort":"string"
-        }
-    },
-     "barber/date/:page": {
-        "controller": "Reservation",
-        "method": "getByDate",
-        "params": {
-            "reservationDate": "string",
-            "barber": "string",
-            "page":"number",
-            "sort":"string"
-        }
-    },    
     "barber/search": {
         "controller": "Reservation",
         "method": "search",

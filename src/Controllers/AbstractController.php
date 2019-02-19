@@ -42,6 +42,8 @@ abstract class AbstractController
             $this->request->getParams()->getString("barber")
         );
         
+        var_dump($this->request->getParams()->getString("barber"));
+        
         return $identity;
     }
     
