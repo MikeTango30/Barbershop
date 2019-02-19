@@ -5,11 +5,11 @@ namespace Barbershop\Controllers;
 use Barbershop\Models\ReservationModel;
 use Barbershop\Reservations\AvailableTimes;
 use Barbershop\Domain\Reservation;
-use Barbershop\Domain\Customer;
-use Barbershop\Models\CustomerModel;
-use Barbershop\Reservations\Validators\ReservationValidator;
+// use Barbershop\Domain\Customer;
+// use Barbershop\Models\CustomerModel;
+// use Barbershop\Reservations\Validators\ReservationValidator;
 use Barbershop\Reservations\SessionManager;
-use Barbershop\Reservations\CustomerManager;
+// use Barbershop\Reservations\CustomerManager;
 use Barbershop\Reservations\ReservationManager;
 use \DateTime;
 
@@ -18,60 +18,55 @@ class ReservationController extends AbstractController
     const PAGE_LENGTH = 10;
     
      //reservations for barber
-    public function getReservedTimes($page): string {
+    public function getReservedTimes($page = 1): string {
         $page = (int)$page;
         $todayTomorrow = $this->getTodayTomorrow();
         
+        $sorted = $this->request->getParams()->has("sort");
+        
         $reservationModel = new ReservationModel($this->db);
-        $reservations = $reservationModel->getAll($page, self::PAGE_LENGTH);
+        $reservations = $reservationModel->getAll($page, self::PAGE_LENGTH, $sorted);
 
         $properties = [
             "today" => $todayTomorrow["today"]->format("Y-m-d"),
             "tomorrow" => $todayTomorrow["tomorrow"]->format("Y-m-d"),
             "reservations" => $reservations,
             "currentPage" => $page,
-            "lastPage" => count($reservations) < self::PAGE_LENGTH
+            "lastPage" => count($reservations) < self::PAGE_LENGTH,
+            "urlParams" => $this->request->getParams()->getAllParametersAsArray()
         ];
         
         return $this->render("barberReservations.twig", $properties);
-    }
-    
-    //reservations for barber - "1" is for $page variable in getReservedTimes($page) method to LIMIT clause in model
-    public function getAllReservedTimes(): string {
-        
-        return $this->getReservedTimes(1);
     }
 
     //get reservations by date
-    public function getByDate($page): string {
+    public function getByDate($page = 1) {
         $todayTomorrow = $this->getTodayTomorrow();
-        
         $reservationDate = $this->request->getParams()->getString("reservationDate");
+        $sorted = $this->request->getParams()->has("sort");
+        
         $reservationModel = new ReservationModel($this->db);
-        $reservations = $reservationModel->getByDate($reservationDate);
+        $reservations = $reservationModel->getByDate($reservationDate, $page, self::PAGE_LENGTH, $sorted);
         
         $properties = [
-            "today" => $today->format("Y-m-d"),
-            "tomorrow" => $tomorrow->format("Y-m-d"),
+            "today" => $todayTomorrow["today"]->format("Y-m-d"),
+            "tomorrow" => $todayTomorrow["tomorrow"]->format("Y-m-d"),
             "reservations" => $reservations,
             "currentPage" => $page,
-            "lastPage" => count($reservations) < self::PAGE_LENGTH
+            "lastPage" => count($reservations) < self::PAGE_LENGTH,
+            "urlParams" => $this->request->getParams()->getAllParametersAsArray()
         ];
         
         return $this->render("barberReservations.twig", $properties);
-    }
-    
-     public function getAllByDate(): string {
-        
-        return $this->getByDate(1);
     }
     
     //search for customer by name or surname
     public function search(): string {
         $firstname = $this->request->getParams()->getString("firstname");
-    
+        $sorted = $this->request->getParams()->has("sort");    
+        
         $reservationModel = new ReservationModel($this->db);
-        $reservations = $reservationModel->search($firstname);
+        $reservations = $reservationModel->search($firstname, $sorted);
         $properties = [
             "reservations" => $reservations,
             "currentPage" => 1,
@@ -90,7 +85,6 @@ class ReservationController extends AbstractController
         $times = new AvailableTimes($this->db);
         $availableTimes = $times->getDayAvailableTimes();
   
-        
         $properties = [
             "today" => $todayTomorrow["today"]->format("Y-m-d"),
             "tomorrow" => $todayTomorrow["tomorrow"]->format("Y-m-d"),
@@ -107,11 +101,14 @@ class ReservationController extends AbstractController
     public function dayAvailableTime($page = 1) {
         $todayTomorrow = $this->getTodayTomorrow();
         $identity = $this->identifyUser();
+        var_dump($identity);
         
         $reservationDate = $this->request->getParams()->getString("reservationDate");
+        var_dump($reservationDate);
+        
         $times = new AvailableTimes($this->db);
         $availableTimes = $times->getDayAvailableTimes($reservationDate);
-        var_dump(count($availableTimes));
+        
         $properties = [
             "today" => $todayTomorrow["today"]->format("Y-m-d"),
             "tomorrow" => $todayTomorrow["tomorrow"]->format("Y-m-d"),
@@ -142,7 +139,6 @@ class ReservationController extends AbstractController
             "surname" => $this->request->getParams()->getString("surname"),
             "phone" => $this->request->getParams()->getString("phone")
         ];
-        var_dump($formParameters);
         
         $todayTomorrow = $this->getTodayTomorrow();
         $identity = $this->identifyUser();
@@ -182,10 +178,10 @@ class ReservationController extends AbstractController
         
         if ($identity == "barber") {
             
-            return $this->getAllReservedTimes();
+            return $this->getReservedTimes();
         } else {
             
-            return $this->getAllAvailableTimes();
+            return $this->getAvailableTimes();
         }    
     }
 }

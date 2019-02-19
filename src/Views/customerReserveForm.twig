@@ -5,14 +5,27 @@ Reserve Time
 {% endblock %}
 {% block content %}
 
+{% if errors is empty %}
 <h2>You chose arrival time on {{ params|date("Y-m-d") }} at {{ params|date("H:i")}}</h2>
+{% endif %}  
+
+{% for error, formError in errors.formErrors %}
+    <h5>{{ error|capitalize }} - {{ formError }}</h5>
+{% endfor %} 
+
+{% if errors.reservationExists %}
+    <h5>{{ errors.reservationExists }}</h5>
+        <form action="/"  method="get">
+        <button type="submit" value="checkReservation">Check Reservation</button> 
+        </form>
+{% endif %}        
+
+
 <h3>Please fill this form and press Reserve button</h3>
 
-{{dump(errors)}}
-
-        <form action="/customer/reserved" method="POST">
+        <form action="/customer/reserved?{{urlParams}}" method="POST">
             <label>Reservation Form</label>
-            <input type="text" placeholder="Name" name="firstname">
+            <input type="text" placeholder="Firstame" name="firstname">
             <input type="text" placeholder="Surname" name="surname">
             <input type="text" placeholder="Phone Number" name="phone">
             <input type="hidden" name="reservationDate" value="{{ params }}">

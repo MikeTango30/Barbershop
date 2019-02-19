@@ -23,7 +23,7 @@ class CustomerController extends AbstractController
         
         if (!isset($_COOKIE["phone"])) {
             $times = new AvailableTimes($this->db);
-            $availableTimes = $times->getAvailableTimes($page);
+            $availableTimes = $times->getDayAvailableTimes($page);
             
             $properties = [
             "today" => $todayTomorrow["today"]->format("Y-m-d"),

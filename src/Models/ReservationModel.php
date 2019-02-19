@@ -16,13 +16,21 @@ class ReservationModel extends AbstractModel
     //const PAGE_LENGTH = 3;
     const CLASSNAME = "Barbershop\Domain\Reservation";
     
+    private $sorted = " customer_id ORDER BY reservationCount DESC ";
+    private $notSorted = " arrivalTime ";
+    
     //todo
-    public function getByDate($reservationDate) {
-        $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation 
+    public function getByDate($reservationDate, int $page, int $pageLength, $sorted): array {
+        $start = $pageLength * ($page - 1);
+        $sorted ? $sorted = $this->sorted : $sorted = $this->notSorted;
+        
+        $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation
             JOIN customer ON customer.id= reservation.customer_id 
             WHERE DATE (reservationDate) = DATE(:reservationDate) 
-            GROUP BY arrivalTime";
+            GROUP BY ".$sorted."LIMIT :page, :length";
         $sth = $this->db->prepare($query);
+        $sth->bindParam("page", $start, PDO::PARAM_INT);
+        $sth->bindParam("length", $pageLength, PDO::PARAM_INT);
         $sth->bindParam("reservationDate", $reservationDate, PDO::PARAM_STR);
         $sth->execute();
         
@@ -30,13 +38,16 @@ class ReservationModel extends AbstractModel
     }
     
     //get reservations for two weeks, 10 per page
-    public function getAll(int $page, int $pageLength): array {
+    public function getAll(int $page, int $pageLength, $sorted): array {
         $start = $pageLength * ($page - 1);
+        var_dump($start);
         
-        $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation 
+        $sorted ? $sorted = $this->sorted : $sorted = $this->notSorted;
+        
+        $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation
             JOIN customer ON customer.id= reservation.customer_id 
-            WHERE DATE (reservationDate) > TIME(NOW()) AND DATE (reservationDate) < DATE(NOW() + INTERVAL 14 DAY) 
-            GROUP BY arrivalTime LIMIT :page, :length";
+            WHERE DATE (reservationDate) AND TIME(arrivalTime) >= DATE(NOW()) AND TIME(NOW()) AND DATE (reservationDate) < DATE(NOW() + INTERVAL 14 DAY) 
+            GROUP BY ".$sorted." LIMIT :page, :length";
         $sth = $this->db->prepare($query);
         $sth->bindParam("page", $start, PDO::PARAM_INT);
         $sth->bindParam("length", $pageLength, PDO::PARAM_INT);
@@ -56,11 +67,13 @@ class ReservationModel extends AbstractModel
     }
     
     //search by name or surname
-    public function search($firstname) {
-         $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation 
+    public function search($firstname, $sorted) {
+        $sorted ? $sorted = $this->sorted : $sorted = $this->notSorted;
+         
+        $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation 
             JOIN customer ON customer.id= reservation.customer_id 
             WHERE firstname LIKE :firstname OR surname LIKE :surname 
-            GROUP BY arrivalTime";
+            GROUP BY ".$sorted."";
         $sth = $this->db->prepare($query);
         $sth->bindValue("firstname", "%$firstname%");
         $sth->bindValue("surname", "%$firstname%");
@@ -75,7 +88,7 @@ class ReservationModel extends AbstractModel
         
         $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation
             JOIN customer ON customer.id= reservation.customer_id
-            GROUP BY customer.id ORDER BY count(customer.id) DESC
+            GROUP BY customer.id ORDER BY reservationCount DESC
             LIMIT :page, :length";
             
             
@@ -93,7 +106,7 @@ class ReservationModel extends AbstractModel
     
     
     //  //check for active reservation
-    public function doesReservationExist($customerId): bool {
+    public function doesReservationNotExist($customerId): bool {
         $query = "SELECT * FROM reservation 
             WHERE ((DATE (reservationDate) AND TIME (arrivalTime)) >= 
             (DATE(NOW()) AND TIME(NOW()))) AND customer_id = :customer_id";

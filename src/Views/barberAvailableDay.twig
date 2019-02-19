@@ -4,6 +4,20 @@
 Times
 {% endblock %}
 {% block content %}
+<form action="/barber/newReservation" method="GET" >
+    <input type="date" name="reservationDate" 
+        value="{{ today|date("Y-m-d") }}" 
+        min="{{ today|date("Y-m-d") }}" 
+        max="{{ today|date_modify("+14 day")|date("Y-m-d") }}">
+    <input type="submit">
+</form>
+<hr>
+<form action="/barber/newReservation" method="get">
+    <input type="hidden" name="barber" value="barber">
+    <button type="submit" name="reservationDate" value="{{ today }}">Available Today</button> 
+    <input type="hidden" name="barber" value="barber">
+    <button type="submit" name="reservationDate" value="{{ tomorrow }}">Available Tomorrow</button>
+</form>
 <table>
     <thead>
         <th>Available Time</th>
@@ -27,15 +41,15 @@ Times
     <ul class="pagination">
         <li class="page-item">
             {% if currentPage != 1 %}
-            <a class="page-link" href="/barber/newReservation/{{ currentPage - 1 }}?barber=barber" aria-label="Previous">
+            <a class="page-link" href="/barber/newReservation/{{ currentPage - 1 }}" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
                 <span class="sr-only">Previous</span>
             </a>
         </li>
             {% endif %}
         <li class="page-item">
-            {% if not lastPage %}
-            <a class="page-link" href="/barber/newReservation/{{ currentPage + 1 }}?barber=barber" aria-label="Next">
+            {% if not availableTimes|slice((currentPage - 1) * pageLength, pageLength) < pageLength %}
+            <a class="page-link" href="/barber/newReservation/{{ currentPage + 1 }}" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
                 <span class="sr-only">Next</span>
             </a>

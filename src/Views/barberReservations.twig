@@ -8,9 +8,9 @@ Reservations
     <input type="date" name="reservationDate" 
         value="{{ today|date("Y-m-d") }}" 
         min="2018-01-01" 
-        max="{{ today|date_modify("+14 day")|date("Y-m-d") }}"
-    >
-    <input type="submit">
+        max="{{ today|date_modify("+14 day")|date("Y-m-d") }}">
+    <input type="submit" value="Sort by Time">
+    <button type="submit" name="sort" value="sort">Sort By Loyal</button>
 </form>
 <table>
     <thead>
@@ -49,7 +49,7 @@ function confirmCancel() {
     <ul class="pagination">
         <li class="page-item">
             {% if currentPage != 1 %}
-            <a class="page-link" href="/barber/{{ currentPage - 1 }}?barber=barber" aria-label="Previous">
+            <a class="page-link" href="/barber/date/{{ currentPage - 1 }}?{{urlParams}}" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
                 <span class="sr-only">Previous</span>
             </a>
@@ -57,7 +57,7 @@ function confirmCancel() {
             {% endif %}
         <li class="page-item">
             {% if not lastPage %}
-            <a class="page-link" href="/barber/{{ currentPage + 1 }}?barber=barber" aria-label="Next">
+            <a class="page-link" href="/barber/date/{{ currentPage + 1 }}?{{urlParams}}" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
                 <span class="sr-only">Next</span>
             </a>

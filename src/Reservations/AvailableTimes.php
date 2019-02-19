@@ -61,7 +61,7 @@ class AvailableTimes
         return $timesStr;
     }
     
-    public function getDayAvailableTimes($day = null) {
+    public function getDayAvailableTimes($page = 1,$day = null) {
     
         if (!is_null($day)) { 
             $times = $this->getDay($day); 
