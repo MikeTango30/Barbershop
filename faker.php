@@ -13,8 +13,8 @@ class AvailableTimes
    
  
     public function __construct() {
-        $this->startTime = new DateTime("2019-01-01 10:00");
-        $this->endTime = new DateTime("2019-03-08 20:00");
+        $this->startTime = new DateTime("2019-02-10 10:00");
+        $this->endTime = new DateTime("2019-03-10 20:00");
         $this->interval = new DateInterval('PT15M');
         $this->period = new DatePeriod($this->startTime, $this->interval, $this->endTime);
        
@@ -75,23 +75,11 @@ $db = new PDO(
 // use the factory to create a Faker\Generator instance
 $faker = Faker\Factory::create();
 
+$customerId = 1791;
+        for ($i = 0; $i < 300; $i++) {
+            $customerId += 10;
 
-        for ($i = 0; $i < 5; $i++) {
-            
-            foreach ($availableTimes->period as $day) {
-                $time[]  = $day->format("Y-m-d H:i:s");
-                }
-                $customerId = 641;
-                $oneDay = $time[random_int(1, 6376)];
-                $dayTimes = $availableTimes->getDay($oneDay);
-                $randomTime = array_rand($dayTimes, 1);
-                $arrivalTime = date("H:i:s", strtotime($randomTime));
-                $reservationDate = date("Y-m-d", strtotime($randomTime));
-    
-
-                $customerId += 10;
-
-             $q = "INSERT INTO customer (customer_id, firstname, surname, phone) VALUES(
+            $q = "INSERT INTO customer (id, firstname, surname, phone) VALUES(
                 '".$customerId."',
                  '".$faker->name."',
                  '".$faker->lastname."',
@@ -102,28 +90,27 @@ $faker = Faker\Factory::create();
              $sth->execute();
 
 
-            for ($i = 0; $i < 5; $i++) {
+            for ($z = 0; $z < 1; $z++) {
                 foreach ($availableTimes->period as $day) {
-                $time[]  = $day->format("Y-m-d H:i:s");
-                }
-                $customerId = 641;
-                $oneDay = $time[random_int(1, 6376)];
-                $dayTimes = $availableTimes->getDay($oneDay);
-                $randomTime = array_rand($dayTimes, 1);
-                $arrivalTime = date("H:i:s", strtotime($randomTime));
-                $reservationDate = date("Y-m-d", strtotime($randomTime));
+                    $time[]  = $day->format("Y-m-d H:i:s");
+                    }
+                    
+                    $oneDay = $time[random_int(1, 750)];
+                    $dayTimes = $availableTimes->getDay($oneDay);
+                    $randomTime = array_rand($dayTimes, 1);
+                    $arrivalTime = date("H:i:s", strtotime($randomTime));
+                    $reservationDate = date("Y-m-d", strtotime($randomTime));
                 
-                print "insert time: ". $reservationDate ." - ".$arrivalTime." </br>";
+                //print "insert time: ". $reservationDate ." - ".$arrivalTime." </br>";
 
                  $q = "INSERT INTO reservation (customer_id, reservationDate, arrivalTime) VALUES(
                     '".$customerId."',
                     :reservationDate,
-                    :arrivalTime'
+                    :arrivalTime
                      )";
                 $sth = $db->prepare($q);
                 $sth->bindParam("reservationDate", $reservationDate, PDO::PARAM_STR);
                 $sth->bindParam("arrivalTime", $arrivalTime, PDO::PARAM_STR);
                 $sth->execute();     
             }
-
         }   
