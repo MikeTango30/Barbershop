@@ -36,20 +36,17 @@ class ReservationManager
             
             // create reservation 
             $reservationModel = new ReservationModel($this->db);
-            
-            var_dump($customerId);
-            var_dump(!$reservationModel->doesReservationNotExist($customerId));
-            
+
             if(!$reservationModel->doesReservationNotExist($customerId)) {
                 $reservationModel->createReservation($reservation);
             } else {
                 $errors["reservationExists"] = "You cannot have more than one active reservation";
             }
         } 
-        
             if ($check->getErrors()) {
                 $errors["formErrors"] = $check->getErrors();
             }
+            
         return $errors;
     }
 }

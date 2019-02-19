@@ -101,10 +101,8 @@ class ReservationController extends AbstractController
     public function dayAvailableTime($page = 1) {
         $todayTomorrow = $this->getTodayTomorrow();
         $identity = $this->identifyUser();
-        var_dump($identity);
         
         $reservationDate = $this->request->getParams()->getString("reservationDate");
-        var_dump($reservationDate);
         
         $times = new AvailableTimes($this->db);
         $availableTimes = $times->getDayAvailableTimes($reservationDate);

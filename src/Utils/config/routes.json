@@ -108,7 +108,7 @@
     },
     "barber/newReservation": {
         "controller": "Reservation",
-        "method": "dayAvailableTime",
+        "method": "availableTimes",
         "params": {
             "barber": "string",
             "reservationDate": "string"
@@ -116,7 +116,7 @@
     },
     "barber/newReservation/:page": {
         "controller": "Reservation",
-        "method": "dayAvailableTime",
+        "method": "availableTimes",
         "params": {
             "reservationDate": "string",
             "barber": "string",

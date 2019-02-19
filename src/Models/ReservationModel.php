@@ -40,10 +40,9 @@ class ReservationModel extends AbstractModel
     //get reservations for two weeks, 10 per page
     public function getAll(int $page, int $pageLength, $sorted): array {
         $start = $pageLength * ($page - 1);
-        var_dump($start);
         
         $sorted ? $sorted = $this->sorted : $sorted = $this->notSorted;
-        
+        var_dump($sorted);
         $query = "SELECT *, count(customer.id) AS reservationCount FROM reservation
             JOIN customer ON customer.id= reservation.customer_id 
             WHERE DATE (reservationDate) AND TIME(arrivalTime) >= DATE(NOW()) AND TIME(NOW()) AND DATE (reservationDate) < DATE(NOW() + INTERVAL 14 DAY) 

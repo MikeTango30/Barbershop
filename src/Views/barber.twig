@@ -4,6 +4,20 @@
 Times
 {% endblock %}
 {% block content %}
+<form action="/barber/newReservation" method="GET" >
+    <input type="date" name="reservationDate" 
+        value="{{ today|date("Y-m-d") }}" 
+        min="{{ today|date("Y-m-d") }}" 
+        max="{{ today|date_modify("+14 day")|date("Y-m-d") }}">
+    <input type="submit">
+</form>
+<hr>
+<form action="/barber/newReservation" method="get">
+    <input type="hidden" name="barber" value="barber">
+    <button type="submit" name="reservationDate" value="{{ today }}">Available Today</button> 
+    <input type="hidden" name="barber" value="barber">
+    <button type="submit" name="reservationDate" value="{{ tomorrow }}">Available Tomorrow</button>
+</form>
 <table>
     <thead>
         <th>Available Time</th>

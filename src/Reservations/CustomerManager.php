@@ -28,7 +28,6 @@ class CustomerManager
             $customerId = $this->db->lastInsertId();
         }
         
-        //var_dump($customerId);
         return $customerId;
     }
 }
